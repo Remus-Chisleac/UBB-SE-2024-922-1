@@ -1,0 +1,92 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.MainPageOld">
+
+    <ScrollView>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Button
+                Clicked="OnLoadEventsClicked"
+                Text="Load Events"
+                Grid.Row="0"
+                HorizontalOptions="Fill"
+                VerticalOptions="Start"
+                Padding="30,0"/>
+            
+            <VerticalStackLayout
+                x:Name="EventsList"
+                Grid.Row="1"
+                Padding="10,0">
+
+                <ListView x:Name="eventsListView">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Padding="10" BackgroundColor="DarkSlateBlue" Margin="5">
+                                    <Shell.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid ColumnDefinitions="0.2*,0.8*">
+                                                <Label Grid.Column="1"
+                                               Text="imre"
+                                               FontAttributes="Italic"
+                                               VerticalTextAlignment="Center" />        
+                                            </Grid>
+                                        </DataTemplate>
+                                    </Shell.ItemTemplate>
+                                    <!-- Organizer Name -->
+                                    <Button Text="Edit" Clicked="OnEventEditClicked" CommandParameter="{Binding EventGUID}" />
+                                    <Label Text="{Binding OrganizerName}" FontSize="Title" FontAttributes="Bold" />
+
+                                    <!-- Title -->
+                                    <Label Text="{Binding Title}" FontSize="Medium" />
+
+                                    <!-- Categories -->
+                                    <Label Text="{Binding Categories}" FontSize="Small" />
+
+                                    <!-- Location -->
+                                    <Label Text="{Binding Location}" FontSize="Small" />
+
+                                    <!-- Start and End Date -->
+                                    <StackLayout Orientation="Horizontal" Spacing="5">
+                                        <Label Text="Start Date:" FontSize="Small" />
+                                        <Label Text="{Binding StartDate}" FontSize="Small" />
+                                        <Label Text="End Date:" FontSize="Small" />
+                                        <Label Text="{Binding EndDate}" FontSize="Small" />
+                                    </StackLayout>
+
+                                    <!-- Description -->
+                                    <Label Text="{Binding Description}" FontSize="Small" />
+
+                                    <!-- Max Participants and Age Limit -->
+                                    <StackLayout Orientation="Horizontal" Spacing="5">
+                                        <Label Text="Max Participants:" FontSize="Small" />
+                                        <Label Text="{Binding MaxParticipants}" FontSize="Small" />
+                                        <Label Text="Age Limit:" FontSize="Small" />
+                                        <Label Text="{Binding AgeLimit}" FontSize="Small" />
+                                    </StackLayout>
+
+                                    <!-- Entry Fee -->
+                                    <Label Text="{Binding EntryFee, StringFormat='Entry Fee: {0:C}'}" FontSize="Small" />
+
+                                    <!-- Banner Image -->
+                                    <Image Source="{Binding BannerURL}" HeightRequest="100" Aspect="AspectFill" />
+
+                                    <!-- Logo Image -->
+                                    <Image Source="{Binding LogoURL}" HeightRequest="50" Aspect="AspectFit"  />
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+            </VerticalStackLayout>
+           
+        </Grid>
+    </ScrollView>
+
+</ContentPage>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.ReportPage">
+    <VerticalStackLayout>
+        <Button
+  Text="X"
+  FontSize="20"
+  Clicked="CloseButton_Clicked"
+  HorizontalOptions="End"
+  VerticalOptions="Center"
+  Margin="0,0,0,0"
+  BackgroundColor="White"
+  TextColor="Grey"/>
+        <Label 
+  Text="Report this event"
+  FontSize="25"
+  FontFamily="Crimson"
+  HorizontalOptions="Center"
+  VerticalOptions="Center" 
+  Margin="0,20,0,30"
+  FontAttributes="Bold"/>
+        <Label Text="Please choose the reason for the report"
+               FontSize="20"
+               Margin="15,0,0,30"/>
+
+        <FlexLayout AlignContent="Start" 
+                  AlignItems="Start"
+                  Direction="Row"
+                 JustifyContent="Start" 
+                 Wrap="Wrap">
+            <CheckBox x:Name="SpamCB" IsChecked="{Binding IsChecked}" Margin="0,2,0,10" HeightRequest="50" Color="#3A86FF" />
+            <Label Text="Spam" Margin="0,8,0,0" FontSize="20"/>
+        </FlexLayout>
+
+        <FlexLayout AlignContent="Start"
+          AlignItems="Start"
+          Direction="Row"
+         JustifyContent="Start" 
+         Wrap="Wrap">
+            <CheckBox x:Name="FraudCB"  IsChecked="{Binding IsChecked}" Margin="0,2,0,10" HeightRequest="50" Color="#3A86FF" />
+            <Label Text="Fraud" Margin="0,8,0,0" FontSize="20"/>
+        </FlexLayout>
+
+        <FlexLayout AlignContent="Start"
+          AlignItems="Start"
+          Direction="Row"
+         JustifyContent="Start" 
+         Wrap="Wrap">
+            <CheckBox x:Name="HarrasmentCB" IsChecked="{Binding IsChecked}" Margin="0,2,0,10" HeightRequest="50" Color="#3A86FF" />
+            <Label Text="Harassment" Margin="0,8,0,0" FontSize="20"/>
+        </FlexLayout>
+
+        <FlexLayout AlignContent="Start"
+          AlignItems="Start"
+          Direction="Row"
+         JustifyContent="Start" 
+         Wrap="Wrap">
+            <CheckBox  x:Name="OffensiveCB" IsChecked="{Binding IsChecked}" Margin="0,2,0,10" HeightRequest="50" Color="#3A86FF" />
+            <Label Text="Offensive" Margin="0,8,0,0" FontSize="20"/>
+        </FlexLayout>
+
+        <FlexLayout AlignContent="Start"
+          AlignItems="Start"
+          Direction="Row"
+         JustifyContent="Start" 
+         Wrap="Wrap">
+            <CheckBox x:Name="ViolationsCB" IsChecked="{Binding IsChecked}" Margin="0,2,0,10" HeightRequest="50" Color="#3A86FF" />
+            <Label Text="Guidelines Violations" Margin="0,8,0,0" FontSize="20"/>
+        </FlexLayout>
+        
+        <FlexLayout AlignContent="Start"
+   AlignItems="Start"
+   Direction="Row"
+  JustifyContent="Start" 
+  Wrap="Wrap">
+            <CheckBox x:Name="NudityCB" IsChecked="{Binding IsChecked}" Margin="0,2,0,30" HeightRequest="50" Color="#3A86FF" />
+            <Label Text="Nudity" Margin="0,8,0,0" FontSize="20"/>
+        </FlexLayout>
+
+
+        <Button Clicked="Button_Clicked"
+                Text="Submit" Margin="0,60,0,0" BackgroundColor="#3A86FF" HeightRequest="55" WidthRequest="340" CornerRadius="100" FontSize="20"/>
+
+    </VerticalStackLayout>
+
+
+</ContentPage>

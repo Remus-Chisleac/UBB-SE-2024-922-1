@@ -1,0 +1,289 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.EventPageUser"
+             Title="Event Page"
+             xmlns:local="clr-namespace:EventsApp.Model_View.Entities">
+    <ScrollView>
+        <VerticalStackLayout Padding="25,0" Spacing="10">
+            <ImageButton
+                Source="https://cdn-icons-png.flaticon.com/512/3114/3114883.png"
+                HeightRequest="30"
+                WidthRequest="30"
+                HorizontalOptions="Start"
+                Clicked="BackImageButton_Clicked">
+            </ImageButton>
+            <Image 
+                x:Name="bannerImage"
+                WidthRequest="300" 
+                Source="{Binding Event.Picture}">
+            </Image>
+            <HorizontalStackLayout Spacing="8">
+                <Label 
+                    x:Name="dateEvent"
+                    Text="19 April"
+                    VerticalOptions="End" 
+                    FontSize="20" 
+                    TextColor="BlueViolet">
+                </Label>
+                <HorizontalStackLayout Spacing="55">
+                    <Label 
+                        x:Name="titleEvent"
+                        Text="{Binding Event.Name}"
+                        FontSize="24" 
+                        VerticalTextAlignment="End" 
+                        TextColor="DarkBlue">
+                    </Label>
+                </HorizontalStackLayout>
+            </HorizontalStackLayout>
+            <Button 
+                        x:Name="buyTicketButton"
+                        Text="Buy Ticket" 
+                        BackgroundColor="Blue" 
+                        HeightRequest="40" 
+                        CornerRadius="50" 
+                        Clicked="BuyTicketButton_Clicked">
+            </Button>
+            <HorizontalStackLayout Spacing="50" Padding="20">
+                <VerticalStackLayout>
+                    <ImageButton 
+                        x:Name="interestedImageButton"
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        CornerRadius="8" 
+                        Source="star_empty.png"
+                        Clicked="InterestedImageButton_Clicked">
+                    </ImageButton>
+                    <Label Text="Interested" FontSize="12"></Label>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <ImageButton 
+                        x:Name="goingImageButton" 
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        CornerRadius="6" 
+                        Source="https://static.thenounproject.com/png/469208-200.png">
+                    </ImageButton>
+                    <Label Text="Going" FontSize="12"></Label>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <ImageButton 
+                        x:Name="shareImageButton"
+                        HeightRequest="30" 
+                        WidthRequest="30" 
+                        Source="https://upload.wikimedia.org/wikipedia/commons/thumb/5/58/Sharethis-grey.svg/1200px-Sharethis-grey.svg.png"
+                        Clicked="ShareImageButton_Clicked">
+                    </ImageButton>
+                    <Label Text="Share" FontSize="12"></Label>
+                </VerticalStackLayout>
+                <VerticalStackLayout>
+                    <ImageButton 
+                            x:Name="reportImageButton"
+                            HeightRequest="30"
+                            WidthRequest="30" 
+                            Source="https://cdn-icons-png.flaticon.com/512/25/25369.png"
+                            Clicked="ReportImageButton_Clicked">
+                    </ImageButton>
+                    <Label Text="Report" FontSize="12"></Label>
+                </VerticalStackLayout>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10">
+                <Image 
+                    HeightRequest="30" 
+                    WidthRequest="30" 
+                    Source="https://cdn-icons-png.flaticon.com/512/456/456283.png">
+                </Image>
+                <Label 
+                    x:Name="organizerLabel"
+                    Text="{Binding Event.HostInfoString}"
+                    VerticalOptions="End" 
+                    TextColor="BlueViolet" 
+                    FontSize="16">
+                </Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10">
+                <Image 
+                    HeightRequest="30" 
+                    WidthRequest="30" 
+                    Source="https://cdn-icons-png.flaticon.com/512/109/109613.png">
+                </Image>
+                <Label 
+                    x:Name="dateTimeLabel"
+                    Text="{Binding Event.StartDate}" 
+                    VerticalOptions="End" 
+                    TextColor="BlueViolet" 
+                    FontSize="16">
+                </Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10">
+                <Image 
+                    HeightRequest="30" 
+                    WidthRequest="30" 
+                    Source="https://cdn-icons-png.flaticon.com/512/2838/2838912.png">
+                </Image>
+                <Label 
+                    x:Name="locationLabel"
+                    Text="{Binding Event.Location}" 
+                    VerticalOptions="End" 
+                    TextColor="BlueViolet" 
+                    FontSize="16">
+                </Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10">
+                <Image 
+                    HeightRequest="30" 
+                    WidthRequest="30" 
+                    Source="https://cdn-icons-png.freepik.com/256/1204/1204035.png">
+                </Image>
+                <Label 
+                    x:Name="participantsInterestedLabel"
+                    Text="{Binding Event.ParticipantsInfoString}" 
+                    VerticalOptions="End" 
+                    TextColor="BlueViolet" 
+                    FontSize="16">
+                </Label>
+            </HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="10">
+                <Image 
+                    HeightRequest="30" 
+                    WidthRequest="30" 
+                    Source="https://cdn-icons-png.flaticon.com/512/785/785581.png">
+                </Image>
+                <Label 
+                    x:Name="ticketLabel"
+                    Text="{Binding Event.PriceInfoString}" 
+                    VerticalOptions="End" 
+                    TextColor="BlueViolet" 
+                    FontSize="16">
+                </Label>
+            </HorizontalStackLayout>
+            <Label 
+                Text="Details"
+                FontSize="18" 
+                Padding="0,20,0,0" 
+                TextColor="DarkBlue">
+            </Label>
+            <Label 
+                x:Name="detailsContentLabel"
+                FontSize="14" 
+                Text="{Binding Event.Description}">
+            </Label>
+            <Label 
+                x:Name="categoriesLabel"
+                Text="#coding#contest#computers">
+            </Label>
+            <Label 
+                x:Name="sponsorsLabel"
+                Text="Sponsored by: UBB Cluj, Primaria Cluj-Napoca" 
+                FontSize="15">
+            </Label>
+            <HorizontalStackLayout Spacing="20">
+                <Label 
+                        Text="Expenses"
+                        FontSize="20"
+                        TextColor="DarkBlue"
+                        VerticalOptions="Center">
+                </Label>
+                <Button
+                        Text="Donate"
+                        Clicked="DonateButton_Clicked"
+                        FontSize="15"
+                        CornerRadius="50"
+                        HeightRequest="35"
+                        BackgroundColor="Blue">
+                </Button>
+            </HorizontalStackLayout>
+            <VerticalStackLayout>
+                <HorizontalStackLayout Padding="15,0,0,0">
+                    <Label
+                                x:Name="expensesCurrentValue"
+                                Text="75">
+                    </Label>
+                    <Label Text="$"></Label>
+                    <Label Text="out of" Padding="15,0,15,0"></Label>
+                    <Label
+                                x:Name="expensesMaximumValue"
+                                Text="100">
+                    </Label>
+                    <Label Text="$"></Label>
+                </HorizontalStackLayout>
+                <Slider
+                            x:Name="expensesSlider"
+                            Minimum="0"
+                            Maximum="100"
+                            ThumbColor="LightGreen"
+                            MaximumTrackColor="LightGreen"
+                            MinimumTrackColor="LightGreen"
+                            Value="75"
+                            WidthRequest="150"
+                            HorizontalOptions="Start">
+                </Slider>
+            </VerticalStackLayout>
+            <VerticalStackLayout>
+                <ListView
+                    x:Name="expensesListView"
+                    WidthRequest="250"
+                    RowHeight="25"
+                    HorizontalOptions="Start">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid
+                                    BackgroundColor="LightGray">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="25" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label 
+                                        Text="{Binding}"
+                                        FontSize="16"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center">
+                                    </Label>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <Label 
+                    Text="Top Donors"
+                    FontSize="16"
+                    Padding="0,10,0,0">
+                </Label>
+                <ListView
+                    x:Name="donorsListView"
+                    WidthRequest="250"
+                    RowHeight="25"
+                    HorizontalOptions="Start">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid BackgroundColor="LightGray">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="25" />
+                                    </Grid.RowDefinitions>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Label 
+                                        Text="{Binding}"
+                                        FontSize="16"
+                                        Grid.Column="0"
+                                        Grid.Row="0"
+                                        HorizontalOptions="Center"
+                                        VerticalOptions="Center">
+                                    </Label>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </VerticalStackLayout>
+        </VerticalStackLayout>
+        
+    </ScrollView>
+</ContentPage>

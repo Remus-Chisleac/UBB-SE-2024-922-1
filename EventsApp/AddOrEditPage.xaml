@@ -1,0 +1,123 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.AddOrEditPage" Shell.NavBarIsVisible="True"
+             Shell.BackgroundColor="#3A86FF">
+    <Shell.TitleView>
+        <FlexLayout>
+            <Label Text="Event Menu" TextColor="White" FontAttributes="Bold" FontSize="30" Margin="25,3,0,0" />
+        </FlexLayout>
+    </Shell.TitleView>
+    <ScrollView>
+        <StackLayout>
+            <Grid Margin="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="100"/>
+                </Grid.RowDefinitions>
+                <!--Title-->
+                <Label Grid.Row="0" Grid.Column="0" Text="Title" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16"/>
+                <Entry x:Name="TitleEntry" Grid.Row="0" Grid.Column="1" Grid.ColumnSpan="4"  Placeholder="Title" HorizontalTextAlignment="Center"/>
+                <!--Logo-->
+                <Label Grid.Row="1" Grid.Column="0" Text="Logo URL" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16"/>
+                <Entry x:Name="LogoURLEntry" Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4"  Placeholder="Logo URL" HorizontalTextAlignment="Center"/>
+                <!--Location-->
+                <Label Grid.Row="2" Grid.Column="0" Text="Location" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16"/>
+                <Entry x:Name="LocationEntry" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4"  Placeholder="Location" HorizontalTextAlignment="Center"/>
+                <!--Price-->
+                <Label Grid.Row="3" Grid.Column="0" Text="Price" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16"/>
+                <Entry x:Name="PriceEntry" Grid.Row="3" Grid.Column="1" Placeholder="Price" HorizontalTextAlignment="Center"/>
+                <!--AgeLimit-->
+                <Label Grid.Row="3" Grid.Column="2" Grid.ColumnSpan="2" Text="Age Limit" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16" HorizontalOptions="CenterAndExpand"/>
+                <Entry x:Name="AgeLimitEntry" Grid.Row="3" Grid.Column="4" Placeholder="Age Limit" HorizontalOptions="CenterAndExpand" HorizontalTextAlignment="Center"/>
+                <!--Date-->
+                <Image Grid.Row="4" Grid.Column="2" Source="clock.svg" HeightRequest="18" WidthRequest="18" HorizontalOptions="CenterAndExpand"/>
+                <Label Grid.Row="4" Grid.Column="0" Text="Date" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16" HorizontalOptions="Start"/>
+                <DatePicker x:Name="StartDatePicker" Grid.Row="4" Grid.Column="1" HorizontalOptions="StartAndExpand"/>
+                <!--Time-->
+                <TimePicker x:Name="StartTimePicker" Grid.Row="4" Grid.Column="3" Time="11:15" HorizontalOptions="StartAndExpand"/>
+                <TimePicker x:Name="EndTimePicker" Grid.Row="4" Grid.Column="4" Time="13:00" HorizontalOptions="StartAndExpand"/>
+                <!--Description-->
+                <Label Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="5" Text="Description" Margin="0,15,0,0" FontAttributes="Bold" FontSize="16"/>
+                <Editor x:Name="DescriptionEntry" Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="6" Placeholder="Description" 
+                       HorizontalTextAlignment="Start" VerticalTextAlignment="Start" HeightRequest="100" MaxLength="1000"/>
+            </Grid>
+            <!--Categories List View-->
+            <FlexLayout AlignItems="Start" Direction="Row" Margin="10">
+                <Button Text="Categories" Clicked="OnSelectCategoriesClicked" TextColor="Black" BackgroundColor="White" BorderColor="Black" BorderWidth="1" 
+                        CornerRadius="25" WidthRequest="110" Margin="0,0,5,0" FontSize="16" FontAttributes="Bold"/>
+
+                <!-- Hidden ListView initially -->
+                <ListView x:Name="CategoriesListView" IsVisible="False" ItemSelected="OnItemSelected" Style="{x:Null}" Margin="10" WidthRequest="240" >
+                    <ListView.ItemsSource>
+                        <x:Array Type="{x:Type x:String}">
+                            <x:String>Academic</x:String>
+                            <x:String>Auction</x:String>
+                            <x:String>Concert</x:String>
+                            <x:String>Conference</x:String>
+                            <x:String>Expo</x:String>
+                            <x:String>Fair</x:String>
+                            <x:String>Festival</x:String>
+                            <x:String>Performing Art</x:String>
+                            <x:String>Politics</x:String>
+                            <x:String>Workshop</x:String>
+                        </x:Array>
+                    </ListView.ItemsSource>
+                </ListView>
+                <StackLayout x:Name="SelectedItemsStack" Orientation="Horizontal">
+                    <!-- Labels for selected items will be added here -->
+                </StackLayout>
+            </FlexLayout>
+
+            <!--Sponsors-->
+            <FlexLayout AlignItems="Start" Direction="Row" Margin="10" MaximumWidthRequest="400">
+                <Button Text="Add Sponsor" Clicked="OnSponsorsClicked" TextColor="Black" BackgroundColor="White" FontSize="16" FontAttributes="Bold"
+                        BorderColor="Black" BorderWidth="1" CornerRadius="25" WidthRequest="150" Margin="0,0,5,0"/>
+                <Entry x:Name="SponsorEntry" Placeholder="Sponsor Name" HorizontalTextAlignment="Center"/>
+            </FlexLayout>
+            <FlexLayout x:Name="SponsorsStack" AlignContent="Start" AlignItems="Start"
+                        HorizontalOptions="FillAndExpand" VerticalOptions="Fill"
+                        Direction="Row" JustifyContent="Start" Wrap="Wrap" >
+                <!-- Labels for will be added here -->
+            </FlexLayout>
+
+            <!-- Expenses -->
+            <FlexLayout AlignItems="Start" Direction="Row" Margin="10" MaximumWidthRequest="400">
+                <Button Text="Add Expense" Clicked="OnExpensesClicked" TextColor="Black" BackgroundColor="White" FontSize="16" FontAttributes="Bold"
+                        BorderColor="Black" BorderWidth="1" CornerRadius="25" WidthRequest="150" Margin="0,0,5,0"/>
+                <Entry x:Name="ExpenseNameEntry" Placeholder="Expense Name and Value" HorizontalTextAlignment="Center"/>
+                <Entry x:Name="ExpenseCostEntry" Placeholder="Expense Name and Value" HorizontalTextAlignment="Center"/>
+            </FlexLayout>
+            <FlexLayout x:Name="ExpensesStack" AlignContent="Start" AlignItems="Start"
+                        HorizontalOptions="FillAndExpand" VerticalOptions="Fill"
+                        Direction="Row" JustifyContent="Start" Wrap="Wrap" >
+                <!-- Labels for will be added here -->
+            </FlexLayout>
+
+            <BoxView HeightRequest="1" Color="Black" Margin="0,10,0,0"/>
+            <!--Buttons-->
+            <FlexLayout x:Name="ButtonsLayout" AlignContent="Start" AlignItems="Start"
+                        HorizontalOptions="FillAndExpand" VerticalOptions="Fill"
+                        Direction="Row" JustifyContent="SpaceEvenly"
+                        Wrap="Wrap" Margin="0,20,0,20">
+                <Button x:Name="DeleteBtn" Clicked="OnDeleteButtonClicked"  Text="Delete" BackgroundColor="Red" TextColor="White" FontAttributes="Bold" 
+                        Padding="30,15,30,15" CornerRadius="40" FontSize="18"/>
+                <Button x:Name="PublishBtn" Clicked="OnPublishedButtonClicked" Text="Publish" BackgroundColor="#3A86FF" TextColor="White" FontAttributes="Bold" 
+                        Padding="30,15,30,15" CornerRadius="40" FontSize="18"/>
+                <Button x:Name="SaveBtn" Clicked="OnSaveButtonClicked" Text="Save" BackgroundColor="#3A86FF" TextColor="White" FontAttributes="Bold" 
+                        Padding="30,15,30,15" CornerRadius="40" FontSize="18"/>
+            </FlexLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

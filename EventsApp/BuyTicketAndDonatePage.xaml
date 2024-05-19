@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.BuyTicketAndDonatePage"
+             Title="BuyTicketAndDonatePage">
+    <ScrollView>
+        <VerticalStackLayout Padding="25,0" Spacing="5">
+            <ImageButton
+                Source="https://cdn-icons-png.flaticon.com/512/3114/3114883.png"
+                HeightRequest="30"
+                WidthRequest="30"
+                HorizontalOptions="Start"
+                Clicked="BackImageButton_Clicked">
+            </ImageButton>
+            <HorizontalStackLayout Spacing="5" HorizontalOptions="Center">
+                <Label 
+                    Text="Credit Card"
+                    VerticalOptions="Center"
+                    FontSize="18"
+                    TextColor="Grey">
+                </Label>
+                <Switch
+                    HorizontalOptions="Center">
+                </Switch>
+                <Label
+                    Text="PayPal"
+                    VerticalOptions="Center"
+                    FontSize="18"
+                    TextColor="Blue">
+                </Label>
+            </HorizontalStackLayout>
+            <Entry 
+                Placeholder="Name"
+                FontSize="18"
+                Keyboard="Text">
+            </Entry>
+            <Entry 
+                Placeholder="Card Number"
+                FontSize="18"
+                Keyboard="Numeric">
+            </Entry>
+            <Entry 
+                Placeholder="CVV"
+                FontSize="18"
+                Keyboard="Numeric">
+            </Entry>
+            <Label 
+                Text="Exp. Date"
+                TextColor="LightGray"
+                FontSize="18"
+                Padding="0,10,0,0">
+            </Label>
+            <DatePicker
+                FontSize="18">
+            </DatePicker>
+            <HorizontalStackLayout>
+                <CheckBox
+                    IsChecked="True"
+                    Color="BlueViolet">
+                </CheckBox>
+                <Label
+                    Text="Save this card information"
+                    VerticalOptions="Center"
+                    FontSize="16">
+                </Label>
+            </HorizontalStackLayout>
+            <Button
+                Text="Pay"
+                FontSize="18"
+                WidthRequest="130"
+                BackgroundColor="BlueViolet"
+                Clicked="PayButton_Clicked">
+            </Button>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
