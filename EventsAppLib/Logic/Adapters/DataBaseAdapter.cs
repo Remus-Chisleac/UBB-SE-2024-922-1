@@ -346,7 +346,7 @@
                 }
                 else if (property.FieldType == typeof(DateTime))
                 {
-                    values += $"'{property.GetValue(o)}', ";
+                    values += $"'{((DateTime)property.GetValue(o)).ToString("yyyy-MM-dd HH:mm:ss.fff")}', ";
                 }
                 else
                 {

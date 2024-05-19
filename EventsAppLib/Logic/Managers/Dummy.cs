@@ -6,6 +6,7 @@
     using System.Runtime.Intrinsics.Arm;
     using System.Text;
     using System.Threading.Tasks;
+    using System.Globalization;
     using Bogus;
     using EventsApp.Logic.Entities;
 
@@ -67,6 +68,12 @@
                 Guid userGuid = AppStateManager.CurrentUserGUID;
                 UsersManager.SetInterestedStatus(userGuid, eventInfo.GUID);
             }
+        }
+
+        private static string ConvertDateTimeFormat(string inputDate)
+        {
+            DateTime dt = DateTime.ParseExact(inputDate, "dd/MM/yyyy HH:mm:ss", CultureInfo.InvariantCulture);
+            return dt.ToString("yyyy-MM-dd HH:mm:ss.fff");
         }
 
         public static EventInfo GenerateRandomEvent(Guid organizerGuid)
