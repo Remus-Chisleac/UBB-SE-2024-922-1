@@ -126,57 +126,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-
-		<Compile Update="EventPageOrganizerSponsor.xaml.cs">
-			<DependentUpon>EventPageOrganizerSponsor.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="EventPageUser.xaml.cs">
-			<DependentUpon>EventPageUser.xaml</DependentUpon>
-		</Compile>
-		<Compile Update="MainPageOld.xaml.cs">
-			<DependentUpon>MainPageOld.xaml</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<MauiXaml Update="AddOrEditPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="BuyTicketAndDonatePage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="EventPageOrganizerSponsor.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="EventPageUser.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="MainPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="MainPageOld.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="RatingPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="ReportPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="ReportsPage - Copy.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
-		<MauiXaml Update="ReportsPage.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
 		<MauiXaml Update="ReviewsPage - Copy.xaml">
-			<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="ReviewsPage.xaml">
-		</MauiXaml>
-
-		<MauiXaml Update="EventInfoPage.xaml">
-
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
 	</ItemGroup>
