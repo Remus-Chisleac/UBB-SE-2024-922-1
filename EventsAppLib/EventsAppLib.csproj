@@ -53,12 +53,6 @@
 	  <Compile Update="AddOrEditPage.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
-	  <Compile Update="App.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
-	  <Compile Update="AppShell.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
 	  <Compile Update="BuyTicketAndDonatePage.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
@@ -99,12 +93,6 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="AddOrEditPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="App.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="AppShell.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="BuyTicketAndDonatePage.xaml">

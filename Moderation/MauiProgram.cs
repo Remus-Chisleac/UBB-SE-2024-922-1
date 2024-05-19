@@ -20,6 +20,7 @@ namespace Moderation
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+                    fonts.AddFont("BAHNSCHRIFT.TTF", "Bahnschrift");
                 });
 
             builder.Services.AddScoped<IGroupRepository, GroupRepository>();
@@ -38,6 +39,8 @@ namespace Moderation
             builder.Services.AddSingleton<IService, Service>();
             builder.Services.AddSingleton<LoginPage>();
 
+            // builder.Services.AddSingleton<MainPage>();
+            // builder.Services.AddSingleton<EventPageUser>();
             ManagersInitializer.Initialize(regenerateDB: true);
 
 #if DEBUG
