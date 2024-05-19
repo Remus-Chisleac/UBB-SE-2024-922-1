@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.RatingPage">
+
+    <VerticalStackLayout>
+        <Button
+            Text="X"
+            FontSize="20"
+            Clicked="CloseButton_Clicked"
+            HorizontalOptions="End"
+            VerticalOptions="Center"
+            Margin="0,0,0,0"
+            BackgroundColor="White"
+            TextColor="Grey"/>
+        <Label 
+            Text="This event is over!"
+            FontSize="25"
+            FontFamily="Crimson"
+            HorizontalOptions="Center"
+            VerticalOptions="Center" 
+            Margin="0,20,0,30"
+            FontAttributes="Bold"/>
+
+        <StackLayout Orientation="Horizontal" Margin="0,20,0,10">
+            <ImageButton Margin="75,0,0,0" Source="white_star.png"  HeightRequest="50"
+                         WidthRequest="50" Clicked="OnStarClicked" />
+            <ImageButton Source="white_star.png"  HeightRequest="50"
+                         WidthRequest="50" Clicked="OnStarClicked" />
+            <ImageButton Source="white_star.png"  HeightRequest="50"
+                         WidthRequest="50" Clicked="OnStarClicked" />
+            <ImageButton Source="white_star.png"  HeightRequest="50"
+                         WidthRequest="50" Clicked="OnStarClicked" />
+            <ImageButton Source="white_star.png"  HeightRequest="50"
+                         WidthRequest="50" Clicked="OnStarClicked" />
+        </StackLayout>
+
+
+
+        <Label 
+    Text="Leave a Review"
+    FontSize="18"
+    FontFamily="Crimson"
+    HorizontalOptions="Center"
+    VerticalOptions="Center" 
+    Margin="0,30,0,40"/>
+        <Frame BorderColor="Black"  
+            CornerRadius="0"
+            Padding="60"
+            Margin="10"
+               HasShadow="True">
+            <Entry x:Name="entry"
+           Placeholder="Type your review..."
+            />
+        </Frame>
+
+        <Button Text="Submit" Margin="0,80,0,0" BackgroundColor="#3A86FF" 
+                HeightRequest="55" WidthRequest="340" CornerRadius="100" FontSize="20"/>
+
+        <Label 
+           Text="Thank you for your feedback!"
+           TextColor="#3A86FF"
+           FontSize="18"
+           FontFamily="Crimson"
+           HorizontalOptions="Center" 
+           VerticalOptions="Center" 
+           Margin="0,20,0,30"/>
+
+    </VerticalStackLayout>
+
+</ContentPage>
