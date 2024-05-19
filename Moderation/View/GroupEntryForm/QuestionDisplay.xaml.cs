@@ -24,7 +24,8 @@ public abstract partial class QuestionDisplay : ContentView
     public abstract string GetResponse();
     protected abstract void CreateContent();
 }
-public class TextQuestionDisplay(TextQuestion question) : QuestionDisplay(question)
+public class TextQuestionDisplay(TextQuestion question)
+    : QuestionDisplay(question)
 {
     protected override void CreateContent()
     {
@@ -41,7 +42,8 @@ public class TextQuestionDisplay(TextQuestion question) : QuestionDisplay(questi
     }
 }
 
-public class SliderQuestionDisplay(SliderQuestion question) : QuestionDisplay(question)
+public class SliderQuestionDisplay(SliderQuestion question)
+    : QuestionDisplay(question)
 {
     protected override void CreateContent()
     {
@@ -81,7 +83,8 @@ public class SliderQuestionDisplay(SliderQuestion question) : QuestionDisplay(qu
         return slider.Value.ToString();
     }
 }
-public class RadioQuestionDisplay(RadioQuestion question) : QuestionDisplay(question)
+public class RadioQuestionDisplay(RadioQuestion question)
+    : QuestionDisplay(question)
 {
     protected override void CreateContent()
     {

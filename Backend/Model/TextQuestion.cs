@@ -1,6 +1,7 @@
 ﻿namespace Moderation.Model
 {
-    public class TextQuestion(string text) : Question(text)
+    public class TextQuestion(string text)
+        : Question(text)
     {
     }
 }
