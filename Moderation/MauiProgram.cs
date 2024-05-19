@@ -4,6 +4,8 @@ using Backend.Repository.Interfaces;
 using Backend.Repository;
 using Moderation.Serivce;
 using Backend.Service;
+using EventsApp;
+using EventsApp.Logic.Managers;
 
 namespace Moderation
 {
@@ -35,6 +37,8 @@ namespace Moderation
             builder.Services.AddSingleton<ApplicationState>();
             builder.Services.AddSingleton<IService, Service>();
             builder.Services.AddSingleton<LoginPage>();
+
+            ManagersInitializer.Initialize(regenerateDB: true);
 
 #if DEBUG
             builder.Logging.AddDebug();

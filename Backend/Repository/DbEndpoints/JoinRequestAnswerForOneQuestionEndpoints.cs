@@ -6,7 +6,7 @@ namespace Moderation.DbEndpoints
 {
     public class JoinRequestAnswerForOneQuestionEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=192.168.100.43,1235;Initial Catalog=Moderation;Persist Security Info=False;User ID=iss;Password=1234567!a;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
+        private static readonly string ConnectionString = "Data Source=localhost,1235;Initial Catalog=Moderation;Persist Security Info=False;User ID=iss;Password=1234567!a;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
         public static void CreateQuestion(JoinRequestAnswerToOneQuestion question)
         {
             using SqlConnection connection = new (ConnectionString);

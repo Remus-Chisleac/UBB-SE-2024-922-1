@@ -15,11 +15,11 @@
         // private static string id = "CloudSAd4cccee0";
         // private static string password = "issevents_123";
         private static string ip = "localhost";
-        private static string port = "1433";
+        private static string port = "1235";
         private static string database = "ISS_EventsApp";
         private static string testDataBase = "ISS_EventsApp_tests";
-        private static string user = "ISS";
-        private static string password = "iss";
+        private static string user = "iss";
+        private static string password = "1234567!a";
         private static string otherConfig = "TrustServerCertificate=True;MultiSubnetFailover=True";
 
         public static string DataBaseConnectionString = "Server=" + ip + "," + port + ";Database=" + database + ";User Id=" + user + ";Password=" + password + ";" + otherConfig;
