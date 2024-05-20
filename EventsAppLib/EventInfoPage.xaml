@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="EventsApp.EventInfoPage"
+             xmlns:local="clr-namespace:EventsApp"
+             Title="EventInfoPage">
+    <VerticalStackLayout>
+        <StackLayout Padding="10" BackgroundColor="DarkSlateBlue" Margin="5">
+            <Label Text="{Binding CurrentEvent.Title}" FontSize="Title" FontAttributes="Bold" />
+            <!-- Title -->
+            <Label Text="{Binding CurrentEvent.Description}" FontSize="Medium" />
+
+            <!-- Categories -->
+            <Label Text="{Binding CurrentEvent.Categories}" FontSize="Small" />
+
+            <!-- Location -->
+            <Label Text="{Binding CurrentEvent.Location}" FontSize="Small" />
+
+            <!-- Start and End Date -->
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <Label Text="Start Date:" FontSize="Small" />
+                <Label Text="{Binding CurrentEvent.StartDate}" FontSize="Small" />
+                <Label Text="End Date:" FontSize="Small" />
+                <Label Text="{Binding CurrentEvent.EndDate}" FontSize="Small" />
+            </StackLayout>
+
+            <!-- Description -->
+            <Label Text="{Binding CurrentEvent.Description}" FontSize="Small" />
+
+            <!-- Max Participants and Age Limit -->
+            <StackLayout Orientation="Horizontal" Spacing="5">
+                <Label Text="Max Participants:" FontSize="Small" />
+                <Label Text="{Binding CurrentEvent.MaxParticipants}" FontSize="Small" />
+                <Label Text="Age Limit:" FontSize="Small" />
+                <Label Text="{Binding CurrentEvent.AgeLimit}" FontSize="Small" />
+            </StackLayout>
+
+            <!-- Entry Fee -->
+            <Label Text="{Binding CurrentEvent.EntryFee, StringFormat='Entry Fee: {0:C}'}" FontSize="Small" />
+
+            <!-- Banner Image -->
+            <Image Source="{Binding CurrentEvent.BannerURL}" HeightRequest="100" Aspect="AspectFill" />
+
+            <!-- Logo Image -->
+            <Image Source="{Binding CurrentEvent.LogoURL}" HeightRequest="50" Aspect="AspectFit"  />
+        </StackLayout>
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:EventsApp"
+             x:Class="EventsApp.ReviewsPage"
+             Title="Reviews">
+    <VerticalStackLayout Padding="25,0" Spacing="10">
+        <ImageButton
+            Source="https://cdn-icons-png.flaticon.com/512/3114/3114883.png"
+            HeightRequest="30"
+            WidthRequest="30"
+            HorizontalOptions="Start"
+            Clicked="BackImageButton_Clicked">   
+        </ImageButton>
+        <VerticalStackLayout Spacing="5">
+            <ImageButton
+                x:Name="eventLogoImage"
+                Source="https://www.cloudflight.io/app/uploads/2022/02/ccc_event-homepage-header-920x920.jpg"
+                WidthRequest="60"
+                HeightRequest="60"
+                CornerRadius="28">
+            </ImageButton>
+            <!--<HorizontalStackLayout HorizontalOptions="Center">
+                <Image
+                    x:Name="star1Rating"
+                    Source="https://i.pngimg.me/thumb/f/720/m2H7H7A0m2m2i8i8.jpg"
+                    WidthRequest="30"
+                    HeightRequest="30">
+                </Image>
+                <Image
+                    x:Name="star2Rating"
+                    Source="https://i.pngimg.me/thumb/f/720/m2H7H7A0m2m2i8i8.jpg"
+                    WidthRequest="30"
+                    HeightRequest="30">  
+                </Image>
+                <Image
+                    x:Name="star3Rating"
+                    Source="https://i.pngimg.me/thumb/f/720/m2H7H7A0m2m2i8i8.jpg"
+                    WidthRequest="30"
+                    HeightRequest="30">  
+                </Image>
+                <Image
+                    x:Name="star4Rating"
+                    Source="https://i.pngimg.me/thumb/f/720/m2H7H7A0m2m2i8i8.jpg"
+                    WidthRequest="30"
+                    HeightRequest="30">  
+                </Image>
+                <Image
+                    x:Name="star5Rating"
+                    Source="https://uxwing.com/wp-content/themes/uxwing/download/arts-graphic-shapes/star-empty-icon.png"
+                    WidthRequest="30"
+                    HeightRequest="30">  
+                </Image>
+            </HorizontalStackLayout>-->
+            <Image
+                x:Name="eventStarsImage"
+                Source="https://upload.wikimedia.org/wikipedia/commons/f/fa/Star_rating_4_of_5.png"
+                HorizontalOptions="Center"
+                WidthRequest="150">
+            </Image>
+            <Label
+                x:Name="eventOrganizer"
+                Text="Cloudflight"
+                HorizontalOptions="Center"
+                FontSize="25"
+                FontAttributes="Bold"
+                TextColor="BlueViolet">
+            </Label>
+        </VerticalStackLayout>
+        <Label
+            Text="Reviews"
+            FontSize="24"
+            TextColor="DarkBlue">
+        </Label>
+        <ListView
+            ItemsSource="{Binding mockReviews}"
+            x:Name="reviewsListView"
+            RowHeight="150"
+            SelectionMode="None">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <VerticalStackLayout>
+                                <HorizontalStackLayout Spacing="20" Padding="10">
+                                    <ImageButton
+                                        x:Name="userImage"
+                                        Source="{Binding UserImageURL}"
+                                        WidthRequest="40"
+                                        HeightRequest="40"
+                                        CornerRadius="20">
+                                    </ImageButton>
+                                    <Image
+                                        x:Name="userRatingImage"
+                                        Source="{Binding StarsImageURL}"
+                                        WidthRequest="150">
+                                    </Image>
+                                </HorizontalStackLayout>
+                                <Border>
+                                    <Label
+                                        x:Name="userRatingText"
+                                        Text="{Binding ReviewText}"
+                                        Padding="10"
+                                        FontSize="18">
+                                    </Label>
+                                </Border>
+                            </VerticalStackLayout>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:EventsApp"
+             x:Class="EventsApp.ReportsPage"
+             Title="Reports">
+    <VerticalStackLayout Padding="25,0" Spacing="5">
+        <ImageButton
+            Source="https://cdn-icons-png.flaticon.com/512/3114/3114883.png"
+            HeightRequest="30"
+            WidthRequest="30"
+            HorizontalOptions="Start"
+            Clicked="BackImageButton_Clicked">
+        </ImageButton>
+        <HorizontalStackLayout Spacing="130" Padding="0,15,0,0">
+            <Label
+                Text="User"
+                FontSize="20"
+                TextDecorations="Underline"
+                TextColor="DarkBlue">
+            </Label>
+            <Label
+                Text="Reason for report"
+                FontSize="20"
+                TextDecorations="Underline"
+                TextColor="DarkBlue">
+            </Label>
+        </HorizontalStackLayout>
+        <ListView
+            ItemsSource="{Binding usersReports}"
+            x:Name="reportsListView">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="50" />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Label 
+                                Text="{Binding UserName}"
+                                FontSize="16"
+                                Grid.Column="0"
+                                Grid.Row="0"
+                                HorizontalOptions="Start"
+                                VerticalOptions="Center">
+                            </Label>
+                            <Label 
+                                Text="{Binding Report}" 
+                                FontSize="16"
+                                Grid.Column="1"
+                                Grid.Row="0"
+                                HorizontalOptions="Center"
+                                VerticalOptions="Center">
+                            </Label>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </VerticalStackLayout>
+</ContentPage>
