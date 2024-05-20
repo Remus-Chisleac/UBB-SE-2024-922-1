@@ -48,7 +48,7 @@ namespace EventsApp
             DateTime endDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, endTime.Hours, endTime.Minutes, 0);
             eventInfo.StartDate = startDateTime;
             eventInfo.EndDate = endDateTime;
-            float.TryParse(this.PriceEntry.Text, out eventInfo.EntryFee);
+            // float.TryParse(this.PriceEntry.Text, out eventInfo.EntryFee);
             eventInfo.BannerURL = this.LogoURLEntry.Text;
             eventInfo.LogoURL = this.LogoURLEntry.Text;
             eventInfo.MaxParticipants = 50;

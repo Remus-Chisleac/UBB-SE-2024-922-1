@@ -6,7 +6,6 @@
     using EventsApp.Logic.Adapters;
     using EventsApp.Logic.Attributes;
     using EventsApp.Logic.Entities;
-    using EventsApp.Logic.Extensions;
     using Microsoft.Data.SqlClient;
 
     public static class ManagersInitializer

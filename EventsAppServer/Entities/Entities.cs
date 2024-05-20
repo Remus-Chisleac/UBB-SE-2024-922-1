@@ -1,23 +1,21 @@
-﻿namespace EventsApp.Logic.Entities
+﻿using System.Data;
+
+namespace EventsAppServer.Entities
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Text.Json.Serialization;
-    using System.Threading.Tasks;
-    using EventsApp.Logic.Attributes;
+    using System.ComponentModel.DataAnnotations;
+    using EventsAppServer.Attributes;
 
     [Table("Users")]
     [System.Serializable]
-    public struct UserInfo
+    public class UserInfo
     {
         public const float MINSCORE = 4.0f;
 
-        [PrimaryKey]
-        public Guid GUID;
-        public string Name;
-        public string Password;
+        [Key]
+        public Guid GUID { get; set; }
+        public string Name { get; set; }
+        public string Password { get; set; }
 
         public UserInfo(Guid guid, string name, string password)
         {
@@ -47,37 +45,41 @@
             this.Password = string.Empty;
         }
     }
+
     [Table("Events")]
     [System.Serializable]
-    public struct EventInfo
+    public class EventInfo
     {
-        [PrimaryKey]
-        [JsonPropertyName("guid")]
+        [Key]
         public Guid GUID { get; set; }
-        [JsonPropertyName("organizerGUID")]
         public Guid OrganizerGUID { get; set; }
-        [JsonPropertyName("eventName")]
         public string EventName { get; set; }
-        [JsonPropertyName("categories")]
         public string Categories { get; set; } // "music, sports, etc."
-        [JsonPropertyName("location")]
         public string Location { get; set; }
-        [JsonPropertyName("maxParticipants")]
         public int MaxParticipants { get; set; }
-        [JsonPropertyName("description")]
         public string Description { get; set; }
-        [JsonPropertyName("startDate")]
         public DateTime StartDate { get; set; }
-        [JsonPropertyName("endDate")]
         public DateTime EndDate { get; set; }
-        [JsonPropertyName("bannerURL")]
         public string BannerURL { get; set; }
-        [JsonPropertyName("logoURL")]
         public string LogoURL { get; set; }
-        [JsonPropertyName("ageLimit")]
         public int AgeLimit { get; set; }
-        [JsonPropertyName("entryFee")]
         public float EntryFee { get; set; }
+        public EventInfo(DataRow row)
+        {
+            GUID = (Guid)row["GUID"];
+            OrganizerGUID = (Guid)row["OrganizerGUID"];
+            EventName = (string)row["EventName"];
+            Categories = (string)row["Categories"];
+            Location = (string)row["Location"];
+            MaxParticipants = (int)row["MaxParticipants"];
+            Description = (string)row["Description"];
+            StartDate = (DateTime)row["StartDate"];
+            EndDate = (DateTime)row["EndDate"];
+            BannerURL = (string)row["BannerURL"];
+            LogoURL = (string)row["LogoURL"];
+            AgeLimit = (int)row["AgeLimit"];
+            EntryFee = (float)row["EntryFee"];
+        }
 
         public EventInfo(Guid guid, Guid userGUID, string eventName, string categories, string location, int maxParticipants, string description, DateTime startDate, DateTime endDate, string bannerURL, string logoURL, int ageLimit, float entryFee)
         {
@@ -150,14 +152,18 @@
 
     [Table("UserEventRelations")]
     [System.Serializable]
-
-    public struct UserEventRelationInfo
+    public class UserEventRelationInfo
     {
-        [PrimaryKey]
-        public Guid UserGUID;
-        [PrimaryKey]
-        public Guid EventGUID;
-        public string Status;
+        public Guid UserGUID { get; set; }
+        public Guid EventGUID { get; set; }
+        public string Status { get; set; }
+
+        public UserEventRelationInfo(DataRow row)
+        {
+            UserGUID = (Guid)row["UserGUID"];
+            EventGUID = (Guid)row["EventGUID"];
+            Status = (string)row["Status"];
+        }
 
         public UserEventRelationInfo(Guid userGUID, Guid eventGUID, string status)
         {
@@ -172,18 +178,30 @@
             this.EventGUID = eventGUID;
             this.Status = string.Empty;
         }
+
+        public UserEventRelationInfo()
+        {
+            this.UserGUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
+            this.Status = string.Empty;
+        }
     }
 
     [Table("Reports")]
     [System.Serializable]
-    public struct ReportInfo
+    public class ReportInfo
     {
-        [PrimaryKey]
-        public Guid UserGUID;
-        [PrimaryKey]
-        public Guid EventGUID;
+        public Guid UserGUID { get; set; }
+        public Guid EventGUID { get; set; }
 
-        public ReportType ReportTypeValue;
+        public ReportType ReportTypeValue { get; set; }
+
+        public ReportInfo(DataRow row)
+        {
+            UserGUID = (Guid)row["UserGUID"];
+            EventGUID = (Guid)row["EventGUID"];
+            ReportTypeValue = (ReportType)row["ReportTypeValue"];
+        }
 
         public ReportInfo(Guid userGUID, Guid eventGUID, ReportType reportType)
         {
@@ -196,6 +214,13 @@
         {
             this.UserGUID = userGUID;
             this.EventGUID = eventGUID;
+            this.ReportTypeValue = ReportType.Harassment;
+        }
+
+        public ReportInfo()
+        {
+            this.UserGUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
             this.ReportTypeValue = ReportType.Harassment;
         }
 
@@ -245,14 +270,12 @@
 
     [Table("Reviews")]
     [System.Serializable]
-    public struct ReviewInfo
+    public class ReviewInfo
     {
-        [PrimaryKey]
-        public Guid UserGUID;
-        [PrimaryKey]
-        public Guid EventGUID;
-        public float Score;
-        public string ReviewDescription;
+        public Guid UserGUID { get; set; }
+        public Guid EventGUID { get; set; }
+        public float Score { get; set; }
+        public string ReviewDescription { get; set; }
 
         public ReviewInfo(Guid userGUID, Guid eventGUID, float score, string reviewDescription)
         {
@@ -269,13 +292,21 @@
             this.Score = 0;
             this.ReviewDescription = string.Empty;
         }
+
+        public ReviewInfo()
+        {
+            this.UserGUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
+            this.Score = 0;
+            this.ReviewDescription = string.Empty;
+        }
     }
 
     [Table("Expenses")]
     [System.Serializable]
-    public struct ExpenseInfo(Guid guid, Guid eventGUID, string expenseName, float cost)
+    public class ExpenseInfo(Guid guid, Guid eventGUID, string expenseName, float cost)
     {
-        [PrimaryKey]
+        [Key]
         public Guid GUID = guid;
         public Guid EventGUID = eventGUID;
         public string ExpenseName = expenseName;
@@ -284,13 +315,21 @@
 
     [Table("Donations")]
     [System.Serializable]
-    public struct DonationInfo
+    public class DonationInfo
     {
-        [PrimaryKey]
-        public Guid GUID;
-        public Guid EventGUID;
-        public Guid UserGUID;
-        public float Amount;
+        [Key]
+        public Guid GUID { get; set; }
+        public Guid EventGUID { get; set; }
+        public Guid UserGUID { get; set; }
+        public float Amount { get; set; }
+
+        public DonationInfo(DataRow row)
+        {
+            GUID = (Guid)row["GUID"];
+            EventGUID = (Guid)row["EventGUID"];
+            UserGUID = (Guid)row["UserGUID"];
+            Amount = (float)row["Amount"];
+        }
 
         public DonationInfo(Guid guid, Guid eventGUID, Guid userGUID, float amount)
         {
@@ -315,13 +354,27 @@
             this.UserGUID = Guid.Empty;
             this.Amount = 0;
         }
+
+        public DonationInfo()
+        {
+            this.GUID = Guid.NewGuid();
+            this.EventGUID = Guid.Empty;
+            this.UserGUID = Guid.Empty;
+            this.Amount = 0;
+        }
     }
 
-    [Table("Admins")]
-    [System.Serializable]
-    public struct AdminInfo(Guid guid)
+    public class AdminInfo
     {
-        [PrimaryKey]
-        public Guid GUID = guid;
+        [Key]
+        public Guid GUID { get; set; }
+
+        public AdminInfo()
+        {
+        }
+        public AdminInfo(Guid guid)
+        {
+            this.GUID = guid;
+        }
     }
 }

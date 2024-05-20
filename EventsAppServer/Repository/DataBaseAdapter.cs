@@ -1,46 +1,24 @@
-﻿namespace EventsApp.Logic.Adapters
+﻿namespace EventsAppServer.Adapters
 {
     using System;
     using System.Collections.Generic;
     using System.Linq;
-    using System.Text;
-    using System.IO;
-    using System.Net;
-    using System.Net.Http;
-    using System.Text.Json;
-    using System.Threading.Tasks;
-    using System.Text.Json.Serialization;
-    using System.Net.Http.Headers;
-    using EventsApp.Logic.Attributes;
-    using EventsApp.Logic.Managers;
+    using EventsAppServer.Attributes;
     using Microsoft.Data.SqlClient;
-    using Microsoft.IdentityModel.Tokens;
-    using Nancy.Json;
 
     public class DataBaseAdapter<T>(string filePath)
         : DataAdapter<T>(filePath)
-        where T : struct
+        where T : class
     {
         private string connectionString = filePath;
 
         private string TableName => typeof(T).GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault().TableName;
-
-        public enum HttpVerb
-        {
-            GET,
-            POST,
-            PUT,
-            DELETE
-        }
-
-        private string baseUrl = "http://localhost:5043";
 
         public string ConnectionString()
         {
             return connectionString;
         }
 
-        // replace with html call
         public override void Add(T item)
         {
             string fields = this.GetFields();
@@ -211,28 +189,58 @@
         {
             List<T> list = new List<T>();
 
-            string endPoint = baseUrl + $"/GetAll/{this.TableName}";
-            string call = $"/GetAll/{this.TableName}";
+            string selectAllQuery = $"SELECT * FROM {this.TableName}";
 
-            // replace with html call to localhost:5043/GetAll
-            string strResponseValue = string.Empty;
-
-            try
+            using (SqlConnection connection = new SqlConnection(this.connectionString))
             {
-                using (var client = new HttpClient())
+                SqlCommand command = new SqlCommand(selectAllQuery, connection);
+                try
                 {
-                    client.BaseAddress = new Uri(baseUrl);
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                    connection.Open();
+                    var reader = command.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        T instance = default(T);
+                        Type type = typeof(T);
+                        TypedReference reference = __makeref(instance);
 
-                    var response = client.GetAsync(call).Result;
-                    response.EnsureSuccessStatusCode();
-                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                        foreach (var property in type.GetFields())
+                        {
+                            if (property.FieldType.IsEnum || property.IsLiteral)
+                            {
+                                continue;
+                            }
+
+                            if (property.FieldType == typeof(string))
+                            {
+                                property.SetValueDirect(reference, reader[property.Name].ToString());
+                            }
+                            else if (property.FieldType == typeof(Guid))
+                            {
+                                property.SetValueDirect(reference, Guid.Parse(reader[property.Name].ToString()));
+                            }
+                            else if (property.FieldType == typeof(DateTime))
+                            {
+                                property.SetValueDirect(reference, DateTime.Parse(reader[property.Name].ToString()));
+                            }
+                            else if (property.FieldType == typeof(int))
+                            {
+                                property.SetValueDirect(reference, int.Parse(reader[property.Name].ToString()));
+                            }
+                            else if (property.FieldType == typeof(float))
+                            {
+                                property.SetValueDirect(reference, float.Parse(reader[property.Name].ToString()));
+                            }
+                        }
+
+                        list.Add(instance);
+                    }
                 }
-                list = JsonSerializer.Deserialize<List<T>>(strResponseValue);
-            }
-            catch (Exception ex)
-            {
-                strResponseValue = "{\"errorMessages\":[\"" + ex.Message.ToString() + "\"],\"errors\":{}}";
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                    throw new Exception("Error getting all items from database");
+                }
             }
             return list;
         }
