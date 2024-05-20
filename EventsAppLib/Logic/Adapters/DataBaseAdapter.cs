@@ -13,7 +13,7 @@
         : DataAdapter<T>(filePath)
         where T : struct
     {
-        private string connectionString = filePath; // CSV file path
+        private string connectionString = filePath;
 
         private string TableName => typeof(T).GetCustomAttributes(typeof(TableAttribute), true).Cast<TableAttribute>().FirstOrDefault().TableName;
 

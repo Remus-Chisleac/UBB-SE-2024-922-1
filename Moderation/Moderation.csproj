@@ -64,6 +64,24 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="Resources\Images\back_arrow.svg" />
+	  <None Remove="Resources\Images\calendar.svg" />
+	  <None Remove="Resources\Images\checkedbox.svg" />
+	  <None Remove="Resources\Images\circle1.jpeg" />
+	  <None Remove="Resources\Images\clock.svg" />
+	  <None Remove="Resources\Images\dotnet_bot.png" />
+	  <None Remove="Resources\Images\event_logo.jpg" />
+	  <None Remove="Resources\Images\location.svg" />
+	  <None Remove="Resources\Images\plus_white.svg" />
+	  <None Remove="Resources\Images\star_empty.png" />
+	  <None Remove="Resources\Images\star_filled.png" />
+	  <None Remove="Resources\Images\ticket.svg" />
+	  <None Remove="Resources\Images\ubb_logo.png" />
+	  <None Remove="Resources\Images\white_star.png" />
+	  <None Remove="Resources\Images\yellow_star.png" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.0" />
 		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
@@ -139,5 +157,7 @@
 	  <ProjectReference Include="..\Backend\Backend.csproj" />
 	  <ProjectReference Include="..\EventsAppLib\EventsAppLib.csproj" />
 	</ItemGroup>
+
+	<ProjectExtensions><VisualStudio><UserProperties XamarinHotReloadDebuggerTimeoutExceptionModerationHideInfoBar="True" /></VisualStudio></ProjectExtensions>
 
 </Project>

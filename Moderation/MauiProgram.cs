@@ -41,7 +41,7 @@ namespace Moderation
 
             // builder.Services.AddSingleton<MainPage>();
             // builder.Services.AddSingleton<EventPageUser>();
-            ManagersInitializer.Initialize(regenerateDB: true);
+            ManagersInitializer.Initialize();
 
 #if DEBUG
             builder.Logging.AddDebug();
