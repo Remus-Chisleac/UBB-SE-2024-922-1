@@ -1,4 +1,6 @@
-﻿namespace EventsApp.Logic.Attributes
+﻿using System.Reflection;
+
+namespace EventsApp.Logic.Attributes
 {
     public class PrimaryKeyAttribute : Attribute
     {

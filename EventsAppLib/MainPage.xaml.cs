@@ -93,7 +93,7 @@
         {
             base.OnAppearing();
             this.RefreshEvents();
-            // RefreshInterestedStars();
+            RefreshInterestedStars();
         }
 
         public void OnSortChanged(object sender, EventArgs e)

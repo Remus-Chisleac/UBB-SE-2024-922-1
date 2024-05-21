@@ -30,7 +30,9 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
                       policy =>
                       {
-                          policy.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+                          policy.WithOrigins("*")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
                       });
 });
 
@@ -109,43 +111,43 @@ app.MapGet("/GetAll/Donations", () =>
 #endregion
 
 #region GetByGUID
-app.MapGet("/Get/User/{GUID}", (Guid GUID) =>
+app.MapGet("/Get/Users/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Get/User");
     return appContrext.Users.Where(x => x.GUID == GUID).FirstOrDefault();
 });
 
-app.MapGet("/Get/Event/{GUID}", (Guid GUID) =>
+app.MapGet("/Get/Events/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Get/Event");
     return appContrext.Events.Where(x => x.GUID == GUID).FirstOrDefault();
 });
 
-app.MapGet("/Get/Report/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapGet("/Get/Reports/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Get/Report");
     return appContrext.Reports.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
 });
 
-app.MapGet("/Get/Review/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapGet("/Get/Reviews/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Get/Review");
     return appContrext.Reviews.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
 });
 
-app.MapGet("/Get/Admin/{GUID}", (Guid GUID) =>
+app.MapGet("/Get/Admins/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Get/Admin");
     return appContrext.Admins.Where(x => x.GUID == GUID).FirstOrDefault();
 });
 
-app.MapGet("/Get/UserEventRelation/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapGet("/Get/UserEventRelations/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Get/UserEventRelation");
     return appContrext.UserEventRelations.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
 });
 
-app.MapGet("/Get/Donation/{GUID}", (Guid GUID) =>
+app.MapGet("/Get/Donations/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Get/Donation");
     return appContrext.Donations.Where(x => x.GUID == GUID).FirstOrDefault();
@@ -153,7 +155,7 @@ app.MapGet("/Get/Donation/{GUID}", (Guid GUID) =>
 #endregion
 
 #region Add
-app.MapPost("/Add/User", (UserInfo user) =>
+app.MapPost("/Add/Users", (UserInfo user) =>
 {
     Console.WriteLine("Add/User");
     appContrext.Users.Add(user);
@@ -161,7 +163,7 @@ app.MapPost("/Add/User", (UserInfo user) =>
     return user;
 });
 
-app.MapPost("/Add/Event", (EventInfo eventInfo) =>
+app.MapPost("/Add/Events", (EventInfo eventInfo) =>
 {
     Console.WriteLine("Add/Event");
     appContrext.Events.Add(eventInfo);
@@ -169,7 +171,7 @@ app.MapPost("/Add/Event", (EventInfo eventInfo) =>
     return eventInfo;
 });
 
-app.MapPost("/Add/Report", (ReportInfo reportInfo) =>
+app.MapPost("/Add/Reports", (ReportInfo reportInfo) =>
 {
     Console.WriteLine("Add/Report");
     appContrext.Reports.Add(reportInfo);
@@ -177,7 +179,7 @@ app.MapPost("/Add/Report", (ReportInfo reportInfo) =>
     return reportInfo;
 });
 
-app.MapPost("/Add/Review", (ReviewInfo reviewInfo) =>
+app.MapPost("/Add/Reviews", (ReviewInfo reviewInfo) =>
 {
     Console.WriteLine("Add/Review");
     appContrext.Reviews.Add(reviewInfo);
@@ -185,7 +187,7 @@ app.MapPost("/Add/Review", (ReviewInfo reviewInfo) =>
     return reviewInfo;
 });
 
-app.MapPost("/Add/Admin", (AdminInfo adminInfo) =>
+app.MapPost("/Add/Admins", (AdminInfo adminInfo) =>
 {
     Console.WriteLine("Add/Admin");
     appContrext.Admins.Add(adminInfo);
@@ -193,7 +195,7 @@ app.MapPost("/Add/Admin", (AdminInfo adminInfo) =>
     return adminInfo;
 });
 
-app.MapPost("/Add/UserEventRelation", (UserEventRelationInfo userEventRelationInfo) =>
+app.MapPost("/Add/UserEventRelations", (UserEventRelationInfo userEventRelationInfo) =>
 {
     Console.WriteLine("Add/UserEventRelation");
     appContrext.UserEventRelations.Add(userEventRelationInfo);
@@ -201,7 +203,7 @@ app.MapPost("/Add/UserEventRelation", (UserEventRelationInfo userEventRelationIn
     return userEventRelationInfo;
 });
 
-app.MapPost("/Add/Donation", (DonationInfo donationInfo) =>
+app.MapPost("/Add/Donations", (DonationInfo donationInfo) =>
 {
     Console.WriteLine("Add/Donation");
     appContrext.Donations.Add(donationInfo);
@@ -211,65 +213,79 @@ app.MapPost("/Add/Donation", (DonationInfo donationInfo) =>
 #endregion
 
 #region Update
-app.MapPut("/Update/User", (UserInfo user) =>
+app.MapPut("/Update/Users", (UserInfo user) =>
 {
     Console.WriteLine("Update/User");
-    appContrext.Users.Update(user);
+    var item = appContrext.Users.Where(x => x.GUID == user.GUID).FirstOrDefault();
+    item = user;
     appContrext.SaveChanges();
     return user;
 });
 
-app.MapPut("/Update/Event", (EventInfo eventInfo) =>
+app.MapPut("/Update/Events", (EventInfo eventInfo) =>
 {
     Console.WriteLine("Update/Event");
-    appContrext.Events.Update(eventInfo);
+    var item = appContrext.Events.Where(x => x.GUID == eventInfo.GUID).FirstOrDefault();
+    item.BannerURL = eventInfo.BannerURL;
+    item.Description = eventInfo.Description;
+    item.EndDate = eventInfo.EndDate;
+    item.Location = eventInfo.Location;
+    item.EventName = eventInfo.EventName;
+    item.StartDate = eventInfo.StartDate;
+    item.EntryFee = eventInfo.EntryFee;
+    item.MaxParticipants = eventInfo.MaxParticipants;
     appContrext.SaveChanges();
     return eventInfo;
 });
 
-app.MapPut("/Update/Report", (ReportInfo reportInfo) =>
+app.MapPut("/Update/Reports", (ReportInfo reportInfo) =>
 {
     Console.WriteLine("Update/Report");
-    appContrext.Reports.Update(reportInfo);
+    var item = appContrext.Reports.Where(x => x.EventGUID == reportInfo.EventGUID && x.UserGUID == reportInfo.UserGUID).FirstOrDefault();
+    item = reportInfo;
     appContrext.SaveChanges();
     return reportInfo;
 });
 
-app.MapPut("/Update/Review", (ReviewInfo reviewInfo) =>
+app.MapPut("/Update/Reviews", (ReviewInfo reviewInfo) =>
 {
     Console.WriteLine("Update/Review");
-    appContrext.Reviews.Update(reviewInfo);
+    var item = appContrext.Reviews.Where(x => x.EventGUID == reviewInfo.EventGUID && x.UserGUID == reviewInfo.UserGUID).FirstOrDefault();
+    item = reviewInfo;
     appContrext.SaveChanges();
     return reviewInfo;
 });
 
-app.MapPut("/Update/Admin", (AdminInfo adminInfo) =>
+app.MapPut("/Update/Admins", (AdminInfo adminInfo) =>
 {
     Console.WriteLine("Update/Admin");
-    appContrext.Admins.Update(adminInfo);
+    var item = appContrext.Admins.Where(x => x.GUID == adminInfo.GUID).FirstOrDefault();
+    item = adminInfo;
     appContrext.SaveChanges();
     return adminInfo;
 });
 
-app.MapPut("/Update/UserEventRelation", (UserEventRelationInfo userEventRelationInfo) =>
+app.MapPut("/Update/UserEventRelations", (UserEventRelationInfo userEventRelationInfo) =>
 {
     Console.WriteLine("Update/UserEventRelation");
-    appContrext.UserEventRelations.Update(userEventRelationInfo);
+    var item = appContrext.UserEventRelations.Where(x => x.EventGUID == userEventRelationInfo.EventGUID && x.UserGUID == userEventRelationInfo.UserGUID).FirstOrDefault();
+    item = userEventRelationInfo;
     appContrext.SaveChanges();
     return userEventRelationInfo;
 });
 
-app.MapPut("/Update/Donation", (DonationInfo donationInfo) =>
+app.MapPut("/Update/Donations", (DonationInfo donationInfo) =>
 {
     Console.WriteLine("Update/Donation");
-    appContrext.Donations.Update(donationInfo);
+    var item = appContrext.Donations.Where(x => x.GUID == donationInfo.GUID).FirstOrDefault();
+    item = donationInfo;
     appContrext.SaveChanges();
     return donationInfo;
 });
 #endregion
 
 #region Delete
-app.MapDelete("/Delete/User/{GUID}", (Guid GUID) =>
+app.MapDelete("/Delete/Users/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Delete/User");
     var user = appContrext.Users.Where(x => x.GUID == GUID).FirstOrDefault();
@@ -278,7 +294,7 @@ app.MapDelete("/Delete/User/{GUID}", (Guid GUID) =>
     return user;
 });
 
-app.MapDelete("/Delete/Event/{GUID}", (Guid GUID) =>
+app.MapDelete("/Delete/Events/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Delete/Event");
     var eventInfo = appContrext.Events.Where(x => x.GUID == GUID).FirstOrDefault();
@@ -287,7 +303,7 @@ app.MapDelete("/Delete/Event/{GUID}", (Guid GUID) =>
     return eventInfo;
 });
 
-app.MapDelete("/Delete/Report/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapDelete("/Delete/Reports/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Delete/Report");
     var reportInfo = appContrext.Reports.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
@@ -296,7 +312,7 @@ app.MapDelete("/Delete/Report/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid Use
     return reportInfo;
 });
 
-app.MapDelete("/Delete/Review/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapDelete("/Delete/Reviews/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Delete/Review");
     var reviewInfo = appContrext.Reviews.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
@@ -305,7 +321,7 @@ app.MapDelete("/Delete/Review/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid Use
     return reviewInfo;
 });
 
-app.MapDelete("/Delete/Admin/{GUID}", (Guid GUID) =>
+app.MapDelete("/Delete/Admins/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Delete/Admin");
     var adminInfo = appContrext.Admins.Where(x => x.GUID == GUID).FirstOrDefault();
@@ -314,7 +330,7 @@ app.MapDelete("/Delete/Admin/{GUID}", (Guid GUID) =>
     return adminInfo;
 });
 
-app.MapDelete("/Delete/UserEventRelation/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapDelete("/Delete/UserEventRelations/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Delete/UserEventRelation");
     var userEventRelationInfo = appContrext.UserEventRelations.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
@@ -323,7 +339,7 @@ app.MapDelete("/Delete/UserEventRelation/{EventGUID}/{UserGUID}", (Guid EventGUI
     return userEventRelationInfo;
 });
 
-app.MapDelete("/Delete/Donation/{GUID}", (Guid GUID) =>
+app.MapDelete("/Delete/Donations/{GUID}", (Guid GUID) =>
 {
     Console.WriteLine("Delete/Donation");
     var donationInfo = appContrext.Donations.Where(x => x.GUID == GUID).FirstOrDefault();
@@ -333,6 +349,113 @@ app.MapDelete("/Delete/Donation/{GUID}", (Guid GUID) =>
 });
 
 #endregion
+
+#region Clear
+//Full Delete
+app.MapDelete("/Clear/Users", () =>
+{
+    Console.WriteLine("Clear/Users");
+    appContrext.Users.RemoveRange(appContrext.Users);
+    appContrext.SaveChanges();
+    return appContrext.Users.ToList();
+});
+
+app.MapDelete("/Clear/Events", () =>
+{
+    Console.WriteLine("Clear/Events");
+    appContrext.Events.RemoveRange(appContrext.Events);
+    appContrext.SaveChanges();
+    return appContrext.Events.ToList();
+});
+
+app.MapDelete("/Clear/Reports", () =>
+{
+    Console.WriteLine("Clear/Reports");
+    appContrext.Reports.RemoveRange(appContrext.Reports);
+    appContrext.SaveChanges();
+    return appContrext.Reports.ToList();
+});
+
+app.MapDelete("/Clear/Reviews", () =>
+{
+    Console.WriteLine("Clear/Reviews");
+    appContrext.Reviews.RemoveRange(appContrext.Reviews);
+    appContrext.SaveChanges();
+    return appContrext.Reviews.ToList();
+});
+
+app.MapDelete("/Clear/Admins", () =>
+{
+    Console.WriteLine("Clear/Admins");
+    appContrext.Admins.RemoveRange(appContrext.Admins);
+    appContrext.SaveChanges();
+    return appContrext.Admins.ToList();
+});
+
+app.MapDelete("/Clear/UserEventRelations", () =>
+{
+    Console.WriteLine("Clear/UserEventRelations");
+    appContrext.UserEventRelations.RemoveRange(appContrext.UserEventRelations);
+    appContrext.SaveChanges();
+    return appContrext.UserEventRelations.ToList();
+});
+
+app.MapDelete("/Clear/Donations", () =>
+{
+    Console.WriteLine("Clear/Donations");
+    appContrext.Donations.RemoveRange(appContrext.Donations);
+    appContrext.SaveChanges();
+    return appContrext.Donations.ToList();
+});
+
+#endregion
+
+#region Contains
+app.MapGet("/Contains/Users/{GUID}", (Guid GUID) =>
+{
+    Console.WriteLine("Contains/User");
+    return appContrext.Users.Where(x => x.GUID == GUID).Any();
+});
+
+app.MapGet("/Contains/Events/{GUID}", (Guid GUID) =>
+{
+    Console.WriteLine("Contains/Event");
+    return appContrext.Events.Where(x => x.GUID == GUID).Any();
+});
+
+app.MapGet("/Contains/Reports/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+{
+    Console.WriteLine("Contains/Report");
+    return appContrext.Reports.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).Any();
+});
+
+app.MapGet("/Contains/Reviews/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+{
+    Console.WriteLine("Contains/Review");
+    return appContrext.Reviews.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).Any();
+});
+
+app.MapGet("/Contains/Admins/{GUID}", (Guid GUID) =>
+{
+    Console.WriteLine("Contains/Admin");
+    return appContrext.Admins.Where(x => x.GUID == GUID).Any();
+});
+
+app.MapGet("/Contains/UserEventRelations/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+{
+    Console.WriteLine("Contains/UserEventRelation");
+    return appContrext.UserEventRelations.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).Any();
+});
+
+app.MapGet("/Contains/Donations/{GUID}", (Guid GUID) =>
+{
+    Console.WriteLine("Contains/Donation");
+    return appContrext.Donations.Where(x => x.GUID == GUID).Any();
+});
+
+#endregion
+
+
 
 
 

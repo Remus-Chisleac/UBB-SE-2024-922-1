@@ -58,7 +58,7 @@
             this.StartDate = eventInfo.StartDate.Date.ToString();
             this.Price = eventInfo.EntryFee.ToString();
             this.NoOfParticipants = eventInfo.MaxParticipants;
-            // this.UpdateInterestedStatus();
+            this.UpdateInterestedStatus();
         }
 
         public string HostInfoString

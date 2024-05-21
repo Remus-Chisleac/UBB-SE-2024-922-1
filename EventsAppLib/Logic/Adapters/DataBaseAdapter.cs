@@ -9,6 +9,7 @@
     using System.Net.Http;
     using System.Text.Json;
     using System.Threading.Tasks;
+    using System.Reflection;
     using System.Text.Json.Serialization;
     using System.Net.Http.Headers;
     using EventsApp.Logic.Attributes;
@@ -43,41 +44,45 @@
         // replace with html call
         public override void Add(T item)
         {
-            string fields = this.GetFields();
-            string values = this.GetValues(item);
-            string insertUserQuery = $"INSERT INTO {this.TableName} ({fields}) VALUES" + $"({values})";
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            string endPoint = baseUrl + $"/Add/{this.TableName}";
+            string call = $"/Add/{this.TableName}/";
+
+            try
             {
-                SqlCommand command = new SqlCommand(insertUserQuery, connection);
-                try
+                using (var client = new HttpClient())
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw new Exception("Error adding event to database");
-                }
+            }
+            catch (Exception ex)
+            {
             }
         }
 
         public override void Clear()
         {
-            string clearQuery = $"DELETE FROM {this.TableName}";
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            string endPoint = baseUrl + $"/Clear/{this.TableName}";
+            string call = $"/Clear/{this.TableName}";
+
+            try
             {
-                SqlCommand command = new SqlCommand(clearQuery, connection);
-                try
+                using (var client = new HttpClient())
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw new Exception("Error clearing database");
-                }
+            }
+            catch (Exception ex)
+            {
             }
         }
 
@@ -114,27 +119,25 @@
         {
             Dictionary<string, object> pks = id.PrimaryKeys;
 
-            string deleteQuery = $"DELETE FROM {this.TableName} WHERE ";
+            string endPoint = baseUrl + $"/Delete/{this.TableName}";
+            string call = $"/Delete/{this.TableName}/";
             foreach (var pk in pks)
             {
-                deleteQuery += $"{pk.Key} = '{pk.Value}' AND ";
+                call += $"{pk.Value}/";
             }
-
-            deleteQuery = deleteQuery.Substring(0, deleteQuery.Length - 5);
-
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            try
             {
-                SqlCommand command = new SqlCommand(deleteQuery, connection);
-                try
+                using (var client = new HttpClient())
                 {
-                    connection.Open();
-                    command.ExecuteNonQuery();
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw new Exception("Error deleting item from database");
-                }
+            }
+            catch (Exception ex)
+            {
             }
         }
 
@@ -142,69 +145,36 @@
         {
             Dictionary<string, object> pks = id.PrimaryKeys;
 
-            string selectQuery = $"SELECT * FROM {this.TableName} WHERE ";
+            string endPoint = baseUrl + $"/Get/{this.TableName}";
+            string call = $"/Get/{this.TableName}/";
             foreach (var pk in pks)
             {
-                selectQuery += $"{pk.Key} = '{pk.Value}' AND ";
+                call += $"{pk.Value}/";
             }
 
-            selectQuery = selectQuery.Substring(0, selectQuery.Length - 5);
+            call = call.Substring(0, call.Length - 1);
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            T item = new T();
+            string strResponseValue = string.Empty;
+
+            try
             {
-                SqlCommand command = new SqlCommand(selectQuery, connection);
-                try
+                using (var client = new HttpClient())
                 {
-                    connection.Open();
-                    var reader = command.ExecuteReader();
-                    if (reader.Read())
-                    {
-                        T instance = default(T);
-                        Type type = typeof(T);
-                        TypedReference reference = __makeref(instance);
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-                        foreach (var property in type.GetFields())
-                        {
-                            if (property.FieldType.IsEnum || property.IsLiteral)
-                            {
-                                continue;
-                            }
-
-                            if (property.FieldType == typeof(string))
-                            {
-                                property.SetValueDirect(reference, reader[property.Name].ToString());
-                            }
-                            else if (property.FieldType == typeof(Guid))
-                            {
-                                property.SetValueDirect(reference, Guid.Parse(reader[property.Name].ToString()));
-                            }
-                            else if (property.FieldType == typeof(DateTime))
-                            {
-                                property.SetValueDirect(reference, DateTime.Parse(reader[property.Name].ToString()));
-                            }
-                            else if (property.FieldType == typeof(int))
-                            {
-                                property.SetValueDirect(reference, int.Parse(reader[property.Name].ToString()));
-                            }
-                            else if (property.FieldType == typeof(float))
-                            {
-                                property.SetValueDirect(reference, float.Parse(reader[property.Name].ToString()));
-                            }
-                        }
-
-                        return instance;
-                    }
-                    else
-                    {
-                        return default(T);
-                    }
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw new Exception("Error getting item from database");
-                }
+                item = JsonSerializer.Deserialize<T>(strResponseValue);
             }
+            catch (Exception ex)
+            {
+                strResponseValue = "{\"errorMessages\":[\"" + ex.Message.ToString() + "\"],\"errors\":{}}";
+            }
+            return item;
         }
 
         public override List<T> GetAll()
@@ -241,109 +211,29 @@
         {
             Dictionary<string, object> pks = id.PrimaryKeys;
 
-            string updateQuery = $"UPDATE {this.TableName} SET ";
-            Type type = typeof(T);
-            foreach (var property in type.GetFields())
-            {
-                if (property.FieldType.IsEnum || property.IsLiteral)
-                {
-                    continue;
-                }
+            string endPoint = baseUrl + $"/Update/{this.TableName}";
+            string call = $"/Update/{this.TableName}/";
+            // foreach (var pk in pks)
+            // {
+            //    call += $"{pk.Value}/";
+            // }
 
-                if (property.FieldType == typeof(string))
+            try
+            {
+                using (var client = new HttpClient())
                 {
-                    updateQuery += $"{property.Name} = '{property.GetValue(item)}', ";
-                }
-                else if (property.FieldType == typeof(Guid))
-                {
-                    updateQuery += $"{property.Name} = '{property.GetValue(item)}', ";
-                }
-                else if (property.FieldType == typeof(DateTime))
-                {
-                    updateQuery += $"{property.Name} = '{property.GetValue(item)}', ";
-                }
-                else
-                {
-                    updateQuery += $"{property.Name} = {property.GetValue(item)}, ";
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(item), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
                 }
             }
-
-            updateQuery = updateQuery.Substring(0, updateQuery.Length - 2);
-
-            updateQuery += " WHERE ";
-            foreach (var pk in pks)
+            catch (Exception ex)
             {
-                updateQuery += $"{pk.Key} = '{pk.Value}' AND ";
             }
-
-            updateQuery = updateQuery.Substring(0, updateQuery.Length - 5);
-
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
-            {
-                SqlCommand command = new SqlCommand(updateQuery, connection);
-                try
-                {
-                    connection.Open();
-                    command.ExecuteNonQuery();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw new Exception("Error updating item in database");
-                }
-            }
-        }
-
-        private string GetFields()
-        {
-            string fields = string.Empty;
-            Type type = typeof(T);
-            foreach (var property in type.GetFields())
-            {
-                // Skip if enum
-                if (property.FieldType.IsEnum || property.IsLiteral)
-                {
-                    continue;
-                }
-
-                fields += $"{property.Name}, ";
-            }
-
-            return fields.Substring(0, fields.Length - 2);
-        }
-
-        private string GetValues(object o)
-        {
-            string values = string.Empty;
-            Type type = typeof(T);
-
-            foreach (var property in type.GetFields())
-            {
-                // If enum or const
-                if (property.FieldType.IsEnum || property.IsLiteral)
-                {
-                    continue;
-                }
-
-                if (property.FieldType == typeof(string))
-                {
-                    values += $"'{property.GetValue(o)}', ";
-                }
-                else if (property.FieldType == typeof(Guid))
-                {
-                    values += $"'{property.GetValue(o)}', ";
-                }
-                else if (property.FieldType == typeof(DateTime))
-                {
-                    values += $"'{((DateTime)property.GetValue(o)).ToString("yyyy-MM-dd HH:mm:ss.fff")}', ";
-                }
-                else
-                {
-                    values += $"{property.GetValue(o)}, ";
-                }
-            }
-
-            return values.Substring(0, values.Length - 2);
         }
     }
 }
