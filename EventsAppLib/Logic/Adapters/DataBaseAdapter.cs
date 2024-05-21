@@ -90,29 +90,36 @@
         {
             Dictionary<string, object> pks = id.PrimaryKeys;
 
-            string selectQuery = $"SELECT * FROM {this.TableName} WHERE ";
+            string endPoint = baseUrl + $"/Contains/{this.TableName}";
+            string call = $"/Contains/{this.TableName}/";
             foreach (var pk in pks)
             {
-                selectQuery += $"{pk.Key} = '{pk.Value}' AND ";
+                call += $"{pk.Value}/";
             }
 
-            selectQuery = selectQuery.Substring(0, selectQuery.Length - 5);
+            call = call.Substring(0, call.Length - 1);
 
-            using (SqlConnection connection = new SqlConnection(this.connectionString))
+            bool contains = false;
+            string strResponseValue = string.Empty;
+
+            try
             {
-                SqlCommand command = new SqlCommand(selectQuery, connection);
-                try
+                using (var client = new HttpClient())
                 {
-                    connection.Open();
-                    var reader = command.ExecuteReader();
-                    return reader.HasRows;
+                    client.BaseAddress = new Uri(baseUrl);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
                 }
-                catch (Exception ex)
-                {
-                    Console.WriteLine(ex.Message);
-                    throw new Exception("Error checking if item exists in database");
-                }
+                contains = JsonSerializer.Deserialize<bool>(strResponseValue);
             }
+            catch (Exception ex)
+            {
+                strResponseValue = "{\"errorMessages\":[\"" + ex.Message.ToString() + "\"],\"errors\":{}}";
+            }
+            return contains;
         }
 
         public override void Delete(Identifier id)
@@ -217,7 +224,6 @@
             // {
             //    call += $"{pk.Value}/";
             // }
-
             try
             {
                 using (var client = new HttpClient())

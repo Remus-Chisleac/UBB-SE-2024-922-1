@@ -315,7 +315,7 @@ app.MapDelete("/Delete/Events/{GUID}", (Guid GUID) =>
     return eventInfo;
 });
 
-app.MapDelete("/Delete/Reports/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapDelete("/Delete/Reports/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Delete/Report");
     var reportInfo = appContrext.Reports.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
@@ -324,7 +324,7 @@ app.MapDelete("/Delete/Reports/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid Us
     return reportInfo;
 });
 
-app.MapDelete("/Delete/Reviews/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapDelete("/Delete/Reviews/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Delete/Review");
     var reviewInfo = appContrext.Reviews.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
@@ -342,7 +342,7 @@ app.MapDelete("/Delete/Admins/{GUID}", (Guid GUID) =>
     return adminInfo;
 });
 
-app.MapDelete("/Delete/UserEventRelations/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapDelete("/Delete/UserEventRelations/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Delete/UserEventRelation");
     var userEventRelationInfo = appContrext.UserEventRelations.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).FirstOrDefault();
@@ -435,13 +435,13 @@ app.MapGet("/Contains/Events/{GUID}", (Guid GUID) =>
     return appContrext.Events.Where(x => x.GUID == GUID).Any();
 });
 
-app.MapGet("/Contains/Reports/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapGet("/Contains/Reports/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Contains/Report");
     return appContrext.Reports.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).Any();
 });
 
-app.MapGet("/Contains/Reviews/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapGet("/Contains/Reviews/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Contains/Review");
     return appContrext.Reviews.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).Any();
@@ -453,7 +453,7 @@ app.MapGet("/Contains/Admins/{GUID}", (Guid GUID) =>
     return appContrext.Admins.Where(x => x.GUID == GUID).Any();
 });
 
-app.MapGet("/Contains/UserEventRelations/{EventGUID}/{UserGUID}", (Guid EventGUID, Guid UserGUID) =>
+app.MapGet("/Contains/UserEventRelations/{UserGUID}/{EventGUID}", (Guid EventGUID, Guid UserGUID) =>
 {
     Console.WriteLine("Contains/UserEventRelation");
     return appContrext.UserEventRelations.Where(x => x.EventGUID == EventGUID && x.UserGUID == UserGUID).Any();
