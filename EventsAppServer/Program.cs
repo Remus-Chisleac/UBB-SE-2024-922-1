@@ -217,7 +217,9 @@ app.MapPut("/Update/Users", (UserInfo user) =>
 {
     Console.WriteLine("Update/User");
     var item = appContrext.Users.Where(x => x.GUID == user.GUID).FirstOrDefault();
-    item = user;
+    item.GUID = user.GUID;
+    item.Name = user.Name;
+    item.Password = user.Password;
     appContrext.SaveChanges();
     return user;
 });
@@ -242,7 +244,9 @@ app.MapPut("/Update/Reports", (ReportInfo reportInfo) =>
 {
     Console.WriteLine("Update/Report");
     var item = appContrext.Reports.Where(x => x.EventGUID == reportInfo.EventGUID && x.UserGUID == reportInfo.UserGUID).FirstOrDefault();
-    item = reportInfo;
+    item.UserGUID = reportInfo.UserGUID;
+    item.EventGUID = reportInfo.EventGUID;
+    item.ReportTypeValue = reportInfo.ReportTypeValue;
     appContrext.SaveChanges();
     return reportInfo;
 });
@@ -251,7 +255,10 @@ app.MapPut("/Update/Reviews", (ReviewInfo reviewInfo) =>
 {
     Console.WriteLine("Update/Review");
     var item = appContrext.Reviews.Where(x => x.EventGUID == reviewInfo.EventGUID && x.UserGUID == reviewInfo.UserGUID).FirstOrDefault();
-    item = reviewInfo;
+    item.UserGUID = reviewInfo.UserGUID;
+    item.EventGUID = reviewInfo.EventGUID;
+    item.ReviewDescription = reviewInfo.ReviewDescription;
+    item.Score = reviewInfo.Score;
     appContrext.SaveChanges();
     return reviewInfo;
 });
@@ -260,7 +267,7 @@ app.MapPut("/Update/Admins", (AdminInfo adminInfo) =>
 {
     Console.WriteLine("Update/Admin");
     var item = appContrext.Admins.Where(x => x.GUID == adminInfo.GUID).FirstOrDefault();
-    item = adminInfo;
+    item.GUID = adminInfo.GUID;
     appContrext.SaveChanges();
     return adminInfo;
 });
@@ -269,7 +276,9 @@ app.MapPut("/Update/UserEventRelations", (UserEventRelationInfo userEventRelatio
 {
     Console.WriteLine("Update/UserEventRelation");
     var item = appContrext.UserEventRelations.Where(x => x.EventGUID == userEventRelationInfo.EventGUID && x.UserGUID == userEventRelationInfo.UserGUID).FirstOrDefault();
-    item = userEventRelationInfo;
+    item.Status = userEventRelationInfo.Status;
+    item.UserGUID = userEventRelationInfo.UserGUID;
+    item.EventGUID = userEventRelationInfo.EventGUID;
     appContrext.SaveChanges();
     return userEventRelationInfo;
 });
@@ -278,7 +287,10 @@ app.MapPut("/Update/Donations", (DonationInfo donationInfo) =>
 {
     Console.WriteLine("Update/Donation");
     var item = appContrext.Donations.Where(x => x.GUID == donationInfo.GUID).FirstOrDefault();
-    item = donationInfo;
+    item.GUID = donationInfo.GUID;
+    item.Amount = donationInfo.Amount;
+    item.UserGUID = donationInfo.UserGUID;
+    item.EventGUID = donationInfo.EventGUID;
     appContrext.SaveChanges();
     return donationInfo;
 });
