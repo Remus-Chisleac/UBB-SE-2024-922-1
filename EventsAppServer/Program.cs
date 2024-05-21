@@ -50,7 +50,7 @@ DataBaseAdapter<UserEventRelationInfo> UserEventRelationsDataBaseAdapter = app.S
 DataBaseAdapter<DonationInfo> DonationsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<DonationInfo>>() ?? throw new Exception();
 
 
-AppContrext appContrext = new AppContrext();
+AppContext appContrext = new AppContext();
 
 #region GetAll
 app.MapGet("/GetAll/Users", () =>
@@ -473,12 +473,8 @@ app.MapGet("/Contains/Donations/{GUID}", (Guid GUID) =>
 
 app.Run();
 
-internal record WeatherForecast(DateOnly Date, int TemperatureC, string? Summary)
-{
-    public int TemperatureF => 32 + (int)(TemperatureC / 0.5556);
-}
 
-public class AppContrext : DbContext
+public class AppContext : DbContext
 {
     public DbSet<UserInfo> Users { get; set; }
     public DbSet<EventInfo> Events { get; set; }
@@ -487,7 +483,7 @@ public class AppContrext : DbContext
     public DbSet<AdminInfo> Admins { get; set; }
     public DbSet<UserEventRelationInfo> UserEventRelations { get; set; }
     public DbSet<DonationInfo> Donations { get; set; }
-    public AppContrext() : base()
+    public AppContext() : base()
     {
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
