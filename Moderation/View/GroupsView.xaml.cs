@@ -2,6 +2,7 @@ using Moderation.CurrentSessionNamespace;
 using Moderation.Model;
 using Backend.Service;
 using EventsApp;
+using Moderation.Entities;
 
 namespace Moderation;
 
@@ -23,11 +24,13 @@ public partial class GroupsView : ContentPage
             ((StackLayout)Content).Children.Add(new View.SingleGroupView(service, group, CurrentSession.GetInstance().User));
         }
 
-        Button backButton = new ()
+#pragma warning disable SA1000 // Keywords should be spaced correctly
+        Button backButton = new()
         {
             Text = "Back",
             HorizontalOptions = LayoutOptions.Fill,
         };
+#pragma warning restore SA1000 // Keywords should be spaced correctly
         backButton.Clicked += (s, e) =>
         {
             CurrentSession.GetInstance().LogOut();
@@ -35,14 +38,17 @@ public partial class GroupsView : ContentPage
         };
         ((StackLayout)Content).Children.Add(backButton);
 
-        Button eventsButton = new ()
+#pragma warning disable SA1000 // Keywords should be spaced correctly
+        Button eventsButton = new()
         {
             Text = "Go to events",
             HorizontalOptions = LayoutOptions.Fill,
         };
+#pragma warning restore SA1000 // Keywords should be spaced correctly
         eventsButton.Clicked += (s, e) =>
         {
-            Navigation.PushAsync(new MainPage());
+            User user = CurrentSession.GetInstance().User;
+            Navigation.PushAsync(new MainPage(user.Id, user.Username, user.Password));
         };
         ((StackLayout)Content).Children.Add(eventsButton);
     }
