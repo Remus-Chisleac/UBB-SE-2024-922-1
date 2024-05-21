@@ -44,7 +44,6 @@
         // replace with html call
         public override void Add(T item)
         {
-            string endPoint = baseUrl + $"/Add/{this.TableName}";
             string call = $"/Add/{this.TableName}/";
 
             try

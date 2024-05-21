@@ -1,123 +1,106 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Entities;
-using Moderation.Model;
 
 namespace Moderation.DbEndpoints
 {
     public class GroupUserEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateGroupUser(GroupUser user)
+        private readonly string serverAddress;
+
+        public GroupUserEndpoints(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
-            string sql = "INSERT INTO GroupUser (Id, Uid, GroupId, PostScore, MarketplaceScore, StatusRestriction, StatusRestrictionDate, StatusMessage, RoleId) " +
-                         "VALUES (@Id, @Uid, @GroupId, @PostScore, @MarketplaceScore, @StatusRestriction, @StatusRestrictionDate, @StatusMessage, @RoleId)";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", user.Id);
-            command.Parameters.AddWithValue("@Uid", user.UserId);
-            command.Parameters.AddWithValue("@GroupId", user.GroupId);
-            command.Parameters.AddWithValue("@PostScore", user.PostScore);
-            command.Parameters.AddWithValue("@MarketplaceScore", user.MarketplaceScore);
-            command.Parameters.AddWithValue("@StatusRestriction", (int)user.Status.Restriction);
-            command.Parameters.AddWithValue("@StatusRestrictionDate", user.Status.RestrictionDate);
-            command.Parameters.AddWithValue("@StatusMessage", user.Status.Message);
-            command.Parameters.AddWithValue("@RoleId", user.RoleId);
-
-            command.ExecuteNonQuery();
+            serverAddress = server;
         }
-        public static List<GroupUser> ReadAllGroupUsers()
+
+        public void CreateGroupUser(GroupUser user)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/groupuser/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return [];
+                Console.WriteLine(ex.Message);
             }
-            List<GroupUser> users = [];
-
-            string sql = "SELECT Id, Uid, Groupid, PostScore, MarketplaceScore, StatusRestriction, StatusRestrictionDate, StatusMessage, RoleId FROM GroupUser";
-
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                // UserRestriction restriction = (UserRestriction)reader.GetInt32(5);
-                // UserStatus status = new(restriction, reader.GetDateTime(6), reader.GetString(7));
-                GroupUser user = new (reader.GetGuid(0), reader.GetGuid(1), reader.GetGuid(2), reader.GetInt32(3), reader.GetInt32(4), new UserStatus(UserRestriction.None, DateTime.Now), reader.GetGuid(8));
-                users.Add(user);
-            }
-
-            return users;
         }
-        public static void UpdateGroupUser(GroupUser user)
+        public List<GroupUser> ReadAllGroupUsers()
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/groupuser";
+            string strResponseValue;
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<GroupUser>>(strResponseValue);
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
+                return new List<GroupUser>();
             }
-
-            string sql = "UPDATE GroupUser SET" +
-                         "Uid = @Uid, " +
-                         "GroupId = @GroupId, " +
-                         "PostScore = @PostScore, " +
-                         "MarketplaceScore = @MarketplaceScore, " +
-                         "StatusRestriction = @StatusRestriction, " +
-                         "StatusRestrictionDate = @StatusRestrictionDate, " +
-                         "StatusMessage = @StatusMessage, " +
-                         "RoleId = @RoleId" +
-                         "WHERE Id = @Id";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Uid", user.UserId);
-            command.Parameters.AddWithValue("@GroupId", user.GroupId);
-            command.Parameters.AddWithValue("@PostScore", user.PostScore);
-            command.Parameters.AddWithValue("@MarketplaceScore", user.MarketplaceScore);
-            command.Parameters.AddWithValue("@StatusRestriction", (int)user.Status.Restriction);
-            command.Parameters.AddWithValue("@StatusRestrictionDate", user.Status.RestrictionDate);
-            command.Parameters.AddWithValue("@StatusMessage", user.Status.Message);
-            command.Parameters.AddWithValue("@RoleId", user.RoleId);
-
-            command.ExecuteNonQuery();
         }
-        public static void DeleteGroupUser(Guid id)
+        public void UpdateGroupUser(GroupUser user)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/groupuser/update";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-            string sql = "DELETE FROM GroupUser WHERE Id = @Id";
+        }
+        public void DeleteGroupUser(Guid id)
+        {
+            string call = $"/groupuser/delete/{id}";
 
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", id);
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            command.ExecuteNonQuery();
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
