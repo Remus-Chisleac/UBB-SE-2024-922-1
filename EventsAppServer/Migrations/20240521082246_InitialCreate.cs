@@ -23,6 +23,18 @@ namespace EventsAppServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Awards",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AwardTypeObj = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Awards", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Donations",
                 columns: table => new
                 {
@@ -118,6 +130,9 @@ namespace EventsAppServer.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Admins");
+
+            migrationBuilder.DropTable(
+                name: "Awards");
 
             migrationBuilder.DropTable(
                 name: "Donations");

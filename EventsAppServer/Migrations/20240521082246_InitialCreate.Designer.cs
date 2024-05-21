@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EventsAppServer.Migrations
 {
-    [DbContext(typeof(AppContrext))]
-    [Migration("20240520191026_InitialCreate")]
+    [DbContext(typeof(AppContext))]
+    [Migration("20240521082246_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -33,6 +33,20 @@ namespace EventsAppServer.Migrations
                     b.HasKey("GUID");
 
                     b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.Award", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AwardTypeObj")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Awards");
                 });
 
             modelBuilder.Entity("EventsAppServer.Entities.DonationInfo", b =>

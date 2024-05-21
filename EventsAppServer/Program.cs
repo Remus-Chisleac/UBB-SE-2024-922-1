@@ -10,7 +10,9 @@ using Microsoft.EntityFrameworkCore;
 
 var MyAllowSpecificOrigins = "randomStringTheySay";
 var builder = WebApplication.CreateBuilder(args);
+
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
+builder.Services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
 
 if (connectionString == null)
 {
@@ -50,7 +52,7 @@ DataBaseAdapter<UserEventRelationInfo> UserEventRelationsDataBaseAdapter = app.S
 DataBaseAdapter<DonationInfo> DonationsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<DonationInfo>>() ?? throw new Exception();
 
 
-AppContext appContrext = new AppContext();
+AppContext appContrext = app.Services.GetRequiredService<AppContext>();
 
 #region GetAll
 app.MapGet("/GetAll/Users", () =>
@@ -483,12 +485,11 @@ public class AppContext : DbContext
     public DbSet<AdminInfo> Admins { get; set; }
     public DbSet<UserEventRelationInfo> UserEventRelations { get; set; }
     public DbSet<DonationInfo> Donations { get; set; }
-    public AppContext() : base()
+
+    public DbSet<Award> Awards { get; set; }
+
+    public AppContext(DbContextOptions<AppContext> options) : base(options)
     {
-    }
-    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        optionsBuilder.UseSqlServer("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

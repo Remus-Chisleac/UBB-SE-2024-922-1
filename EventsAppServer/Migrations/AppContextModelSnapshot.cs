@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace EventsAppServer.Migrations
 {
-    [DbContext(typeof(AppContrext))]
-    partial class AppContrextModelSnapshot : ModelSnapshot
+    [DbContext(typeof(AppContext))]
+    partial class AppContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -30,6 +30,20 @@ namespace EventsAppServer.Migrations
                     b.HasKey("GUID");
 
                     b.ToTable("Admins");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.Award", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("AwardTypeObj")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Awards");
                 });
 
             modelBuilder.Entity("EventsAppServer.Entities.DonationInfo", b =>
