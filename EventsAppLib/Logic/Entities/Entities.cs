@@ -3,7 +3,9 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Runtime.CompilerServices;
     using System.Text;
+    using System.Text.Json.Serialization;
     using System.Threading.Tasks;
     using EventsApp.Logic.Attributes;
 
@@ -14,9 +16,12 @@
         public const float MINSCORE = 4.0f;
 
         [PrimaryKey]
-        public Guid GUID;
-        public string Name;
-        public string Password;
+        [JsonPropertyName("guid")]
+        public Guid GUID { get; set; }
+        [JsonPropertyName("name")]
+        public string Name { get; set; }
+        [JsonPropertyName("password")]
+        public string Password { get; set; }
 
         public UserInfo(Guid guid, string name, string password)
         {
@@ -46,25 +51,37 @@
             this.Password = string.Empty;
         }
     }
-
     [Table("Events")]
     [System.Serializable]
     public struct EventInfo
     {
         [PrimaryKey]
-        public Guid GUID;
-        public Guid OrganizerGUID;
-        public string EventName;
-        public string Categories; // "music, sports, etc."
-        public string Location;
-        public int MaxParticipants;
-        public string Description;
-        public DateTime StartDate;
-        public DateTime EndDate;
-        public string BannerURL;
-        public string LogoURL;
-        public int AgeLimit;
-        public float EntryFee;
+        [JsonPropertyName("guid")]
+        public Guid GUID { get; set; }
+        [JsonPropertyName("organizerGUID")]
+        public Guid OrganizerGUID { get; set; }
+        [JsonPropertyName("eventName")]
+        public string EventName { get; set; }
+        [JsonPropertyName("categories")]
+        public string Categories { get; set; } // "music, sports, etc."
+        [JsonPropertyName("location")]
+        public string Location { get; set; }
+        [JsonPropertyName("maxParticipants")]
+        public int MaxParticipants { get; set; }
+        [JsonPropertyName("description")]
+        public string Description { get; set; }
+        [JsonPropertyName("startDate")]
+        public DateTime StartDate { get; set; }
+        [JsonPropertyName("endDate")]
+        public DateTime EndDate { get; set; }
+        [JsonPropertyName("bannerURL")]
+        public string BannerURL { get; set; }
+        [JsonPropertyName("logoURL")]
+        public string LogoURL { get; set; }
+        [JsonPropertyName("ageLimit")]
+        public int AgeLimit { get; set; }
+        [JsonPropertyName("entryFee")]
+        public float EntryFee { get; set; }
 
         public EventInfo(Guid guid, Guid userGUID, string eventName, string categories, string location, int maxParticipants, string description, DateTime startDate, DateTime endDate, string bannerURL, string logoURL, int ageLimit, float entryFee)
         {
@@ -116,17 +133,38 @@
             this.AgeLimit = 0;
             this.EntryFee = 0;
         }
+
+        public EventInfo()
+        {
+            this.GUID = Guid.Empty;
+            this.OrganizerGUID = Guid.Empty;
+            this.EventName = string.Empty;
+            this.Categories = string.Empty;
+            this.Location = string.Empty;
+            this.MaxParticipants = 0;
+            this.Description = string.Empty;
+            this.StartDate = DateTime.Now;
+            this.EndDate = DateTime.Now;
+            this.BannerURL = string.Empty;
+            this.LogoURL = string.Empty;
+            this.AgeLimit = 0;
+            this.EntryFee = 0;
+        }
     }
 
-    [Table("UsersEventsStatus")]
+    [Table("UserEventRelations")]
     [System.Serializable]
+
     public struct UserEventRelationInfo
     {
         [PrimaryKey]
-        public Guid UserGUID;
+        [JsonPropertyName("userGUID")]
+        public Guid UserGUID { get; set; }
         [PrimaryKey]
-        public Guid EventGUID;
-        public string Status;
+        [JsonPropertyName("eventGUID")]
+        public Guid EventGUID { get; set; }
+        [JsonPropertyName("status")]
+        public string Status { get; set; }
 
         public UserEventRelationInfo(Guid userGUID, Guid eventGUID, string status)
         {
@@ -141,6 +179,13 @@
             this.EventGUID = eventGUID;
             this.Status = string.Empty;
         }
+
+        public UserEventRelationInfo()
+        {
+            this.UserGUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
+            this.Status = string.Empty;
+        }
     }
 
     [Table("Reports")]
@@ -148,10 +193,12 @@
     public struct ReportInfo
     {
         [PrimaryKey]
+        [JsonPropertyName("userGUID")]
         public Guid UserGUID;
         [PrimaryKey]
+        [JsonPropertyName("eventGUID")]
         public Guid EventGUID;
-
+        [JsonPropertyName("reportTypeValue")]
         public ReportType ReportTypeValue;
 
         public ReportInfo(Guid userGUID, Guid eventGUID, ReportType reportType)
@@ -165,6 +212,13 @@
         {
             this.UserGUID = userGUID;
             this.EventGUID = eventGUID;
+            this.ReportTypeValue = ReportType.Harassment;
+        }
+
+        public ReportInfo()
+        {
+            this.UserGUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
             this.ReportTypeValue = ReportType.Harassment;
         }
 
@@ -217,11 +271,15 @@
     public struct ReviewInfo
     {
         [PrimaryKey]
-        public Guid UserGUID;
+        [JsonPropertyName("userGUID")]
+        public Guid UserGUID { get; set; }
         [PrimaryKey]
-        public Guid EventGUID;
-        public float Score;
-        public string ReviewDescription;
+        [JsonPropertyName("eventGUID")]
+        public Guid EventGUID { get; set; }
+        [JsonPropertyName("score")]
+        public float Score { get; set; }
+        [JsonPropertyName("reviewDescription")]
+        public string ReviewDescription { get; set; }
 
         public ReviewInfo(Guid userGUID, Guid eventGUID, float score, string reviewDescription)
         {
@@ -238,17 +296,44 @@
             this.Score = 0;
             this.ReviewDescription = string.Empty;
         }
+
+        public ReviewInfo()
+        {
+            this.UserGUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
+            this.Score = 0;
+            this.ReviewDescription = string.Empty;
+        }
     }
 
     [Table("Expenses")]
     [System.Serializable]
-    public struct ExpenseInfo(Guid guid, Guid eventGUID, string expenseName, float cost)
+    public struct ExpenseInfo
     {
         [PrimaryKey]
-        public Guid GUID = guid;
-        public Guid EventGUID = eventGUID;
-        public string ExpenseName = expenseName;
-        public float Cost = cost;
+        [JsonPropertyName("guid")]
+        public Guid GUID { get; set; }
+        [JsonPropertyName("eventGUID")]
+        public Guid EventGUID { get; set; }
+        [JsonPropertyName("expenseName")]
+        public string ExpenseName { get; set; }
+        [JsonPropertyName("cost")]
+        public float Cost { get; set; }
+
+        public ExpenseInfo(Guid guid, Guid eventGUID, string expenseName, float cost)
+        {
+            this.GUID = guid;
+            this.EventGUID = eventGUID;
+            this.ExpenseName = expenseName;
+        }
+
+        public ExpenseInfo()
+        {
+            this.GUID = Guid.Empty;
+            this.EventGUID = Guid.Empty;
+            this.ExpenseName = string.Empty;
+            this.Cost = 0;
+        }
     }
 
     [Table("Donations")]
@@ -256,10 +341,14 @@
     public struct DonationInfo
     {
         [PrimaryKey]
-        public Guid GUID;
-        public Guid EventGUID;
-        public Guid UserGUID;
-        public float Amount;
+        [JsonPropertyName("guid")]
+        public Guid GUID { get; set; }
+        [JsonPropertyName("eventGUID")]
+        public Guid EventGUID { get; set; }
+        [JsonPropertyName("userGUID")]
+        public Guid UserGUID { get; set; }
+        [JsonPropertyName("amount")]
+        public float Amount { get; set; }
 
         public DonationInfo(Guid guid, Guid eventGUID, Guid userGUID, float amount)
         {
@@ -284,13 +373,29 @@
             this.UserGUID = Guid.Empty;
             this.Amount = 0;
         }
+        public DonationInfo()
+        {
+            this.GUID = Guid.NewGuid();
+            this.EventGUID = Guid.Empty;
+            this.UserGUID = Guid.Empty;
+            this.Amount = 0;
+        }
     }
 
     [Table("Admins")]
     [System.Serializable]
-    public struct AdminInfo(Guid guid)
+    public struct AdminInfo
     {
         [PrimaryKey]
-        public Guid GUID = guid;
+        [JsonPropertyName("guid")]
+        public Guid GUID { get; set; }
+        public AdminInfo(Guid guid)
+        {
+            this.GUID = guid;
+        }
+        public AdminInfo()
+        {
+            this.GUID = Guid.NewGuid();
+        }
     }
 }

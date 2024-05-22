@@ -3,6 +3,8 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Reflection;
+    using System.Security.Cryptography;
     using System.Text;
     using System.Threading.Tasks;
     using EventsApp.Logic.Attributes;
@@ -17,16 +19,32 @@
         {
             Dictionary<string, object> primaryKeys = new Dictionary<string, object>();
 
-            var temp = obj.GetType().GetFields();
-
-            foreach (var field in obj.GetType().GetFields())
+            FieldInfo[] fieldList = obj.GetType().GetFields();
+            if (fieldList.Count() != 0)
             {
-                var primaryKeyAttribute = field.GetCustomAttributes(typeof(PrimaryKeyAttribute), true).FirstOrDefault() as PrimaryKeyAttribute;
-
-                if (primaryKeyAttribute != null)
+                foreach (var field in obj.GetType().GetFields())
                 {
-                    string fieldName = field.Name;
-                    primaryKeys.Add(fieldName, field.GetValue(obj));
+                    var primaryKeyAttribute = field.GetCustomAttributes(typeof(PrimaryKeyAttribute), true).FirstOrDefault() as PrimaryKeyAttribute;
+
+                    if (primaryKeyAttribute != null)
+                    {
+                        string fieldName = field.Name;
+                        primaryKeys.Add(fieldName, field.GetValue(obj));
+                    }
+                }
+            }
+            else
+            {
+                PropertyInfo[] propList = obj.GetType().GetProperties();
+                foreach (var prop in propList)
+                {
+                    var primaryKeyAttribute = prop.GetCustomAttributes(typeof(PrimaryKeyAttribute), true).FirstOrDefault() as PrimaryKeyAttribute;
+
+                    if (primaryKeyAttribute != null)
+                    {
+                        string propName = prop.Name;
+                        primaryKeys.Add(propName, prop.GetValue(obj));
+                    }
                 }
             }
 

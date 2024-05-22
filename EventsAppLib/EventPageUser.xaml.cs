@@ -134,5 +134,6 @@ public partial class EventPageUser : ContentPage
 
     private void BackImageButton_Clicked(object sender, EventArgs e)
     {
+        this.Navigation.PopAsync();
     }
 }

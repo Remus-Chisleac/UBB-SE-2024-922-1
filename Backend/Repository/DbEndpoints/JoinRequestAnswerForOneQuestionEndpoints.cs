@@ -1,4 +1,7 @@
 ﻿using System.Configuration;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Microsoft.Data.SqlClient;
 using Moderation.Entities;
 
@@ -6,87 +9,102 @@ namespace Moderation.DbEndpoints
 {
     public class JoinRequestAnswerForOneQuestionEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1235;Initial Catalog=Moderation;Persist Security Info=False;User ID=iss;Password=1234567!a;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateQuestion(JoinRequestAnswerToOneQuestion question)
-        {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
-            string sql = "INSERT INTO JoinRequestMessage VALUES (@JoinRequestId,@[Key], @[Value])";
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@JoinRequest", question.RequestId);
-            command.Parameters.AddWithValue("@[Key]", question.QuestionText);
-            command.Parameters.AddWithValue("@[Value]", question.QuestionAnswer);
-            command.ExecuteNonQuery();
-        }
-        public static List<JoinRequestAnswerToOneQuestion> ReadQuestion()
-        {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return [];
-            }
-            List<JoinRequestAnswerToOneQuestion> allAnswersToAllQuestions = [];
+        private readonly string serverAddress;
 
-            string sql = "SELECT * FROM JoinRequestMessage";
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                JoinRequestAnswerToOneQuestion qAndA = new (reader.GetGuid(0), reader.GetString(1), reader.GetString(2));
-                allAnswersToAllQuestions.Add(qAndA);
-            }
+        public JoinRequestAnswerForOneQuestionEndpoints(string server)
+        {
+            serverAddress = server;
+        }
 
-            return allAnswersToAllQuestions;
-        }
-        public static void UpdateQuestion(JoinRequestAnswerToOneQuestion question)
+        public void CreateQuestion(JoinRequestAnswerToOneQuestion question)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/joinquestion/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(question), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-            string sql = "UPDATE JoinRequestMessage SET [Value]=@[Value] WHERE JoinRequestId=@JoinRequestId AND [Key]=@[Key]";
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@JoinRequest", question.RequestId);
-            command.Parameters.AddWithValue("@[Key]", question.QuestionText);
-            command.Parameters.AddWithValue("@[Value]", question.QuestionAnswer);
-            command.ExecuteNonQuery();
         }
-        public static void DeleteQuestion(JoinRequestAnswerToOneQuestion question)
+        public List<JoinRequestAnswerToOneQuestion> ReadQuestion()
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/joinquestion";
+            string strResponseValue;
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<JoinRequestAnswerToOneQuestion>>(strResponseValue);
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
+                return new List<JoinRequestAnswerToOneQuestion>();
             }
-            string sql = "DELETE FROM JoinRequestMessage WHERE JoinRequestId=@JoinRequestId AND [Key]=@[Key]";
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@JoinRequest", question.RequestId);
-            command.Parameters.AddWithValue("@[Key]", question.QuestionText);
-            command.ExecuteNonQuery();
+        }
+        public void UpdateQuestion(JoinRequestAnswerToOneQuestion question)
+        {
+            string call = "/joinquestion/update";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(question), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+        public void DeleteQuestion(JoinRequestAnswerToOneQuestion question)
+        {
+            string call = $"/award/delete";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(question), Encoding.UTF8, "application/json");
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

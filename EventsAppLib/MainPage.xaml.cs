@@ -59,10 +59,14 @@
             return events;
         }
 
-        public MainPage()
+        public MainPage(Guid id = default(Guid), string name = null, string pass = null)
         {
             this.InitializeComponent();
             this.FormattedDate = this.Date.ToString("dddd, d MMM, hh:mm tt");
+            if (pass != null)
+            {
+                AppStateManager.SetCurrentUser(id, name, pass);
+            }
             /*
             Events = new ObservableCollection<Event>
             {
@@ -93,7 +97,7 @@
         {
             base.OnAppearing();
             this.RefreshEvents();
-            // RefreshInterestedStars();
+            RefreshInterestedStars();
         }
 
         public void OnSortChanged(object sender, EventArgs e)

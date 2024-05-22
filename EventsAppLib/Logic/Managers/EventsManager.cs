@@ -1,28 +1,29 @@
 ﻿namespace EventsApp.Logic.Managers
 {
     using System.Diagnostics;
+    using System.Reflection;
     using System.Runtime.CompilerServices;
     using EventsApp.Logic.Adapters;
     using EventsApp.Logic.Entities;
     using EventsApp.Logic.Extensions;
     public static class EventsManager
     {
-        private static DataAdapter<EventInfo> eventsAdapter;
+        private static DataAdapter<Entities.EventInfo> eventsAdapter;
         private static DataAdapter<UserEventRelationInfo> userEventRelationsAdapter;
 
-        public static void Initialize(DataAdapter<EventInfo> adapter, DataAdapter<UserEventRelationInfo> userEventRelationsAdapter)
+        public static void Initialize(DataAdapter<Entities.EventInfo> adapter, DataAdapter<UserEventRelationInfo> userEventRelationsAdapter)
         {
             eventsAdapter = adapter;
             EventsManager.userEventRelationsAdapter = userEventRelationsAdapter;
         }
 
-        public static EventInfo GetEvent(Guid eventId)
+        public static Entities.EventInfo GetEvent(Guid eventId)
         {
-            EventInfo eventInfo = new EventInfo(eventId);
+            Entities.EventInfo eventInfo = new Entities.EventInfo(eventId);
             return eventsAdapter.Get(eventInfo.GetIdentifier());
         }
 
-        public static List<EventInfo> GetAllEvents()
+        public static List<Entities.EventInfo> GetAllEvents()
         {
             return eventsAdapter.GetAll();
         }
@@ -34,7 +35,7 @@
         /// <returns></returns>
         public static bool IsEventActive(Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             DateTime startDate = eventInfo.StartDate;
             DateTime endDate = eventInfo.EndDate;
             DateTime today = DateTime.Now;
@@ -48,7 +49,7 @@
 
         public static bool IsOrganizer(Guid userId, Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             if (eventInfo.OrganizerGUID == userId)
             {
                 return true;
@@ -57,20 +58,20 @@
             return false;
         }
 
-        public static void AddNewEvent(EventInfo eventInfo)
+        public static void AddNewEvent(Entities.EventInfo eventInfo)
         {
             eventsAdapter.Add(eventInfo);
         }
 
-        public static void UpdateEvent(Guid eventId, EventInfo eventInfo)
+        public static void UpdateEvent(Guid eventId, Entities.EventInfo eventInfo)
         {
-            EventInfo currentEvent = GetEvent(eventId);
+            Entities.EventInfo currentEvent = GetEvent(eventId);
             eventsAdapter.Update(currentEvent.GetIdentifier(), eventInfo);
         }
 
         public static void DeleteEvent(Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             eventsAdapter.Delete(eventInfo.GetIdentifier());
         }
 
@@ -81,7 +82,7 @@
         /// <returns></returns>
         public static bool IsEventOver(Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             DateTime endDate = eventInfo.EndDate;
             DateTime today = DateTime.Now;
             if (today > endDate)
@@ -92,9 +93,9 @@
             return false;
         }
 
-        public static List<EventInfo> FilterEvents(EventFilter filter)
+        public static List<Entities.EventInfo> FilterEvents(EventFilter filter)
         {
-            List<EventInfo> filteredEvents = GetAllEvents();
+            List<Entities.EventInfo> filteredEvents = GetAllEvents();
             // If something is null ignore that filter
             // Ex: If name is "" ignore the name filter
             if (filter.Name != null)
@@ -134,7 +135,7 @@
 
         public static List<UserInfo> GetInterestedUsers(Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             List<UserEventRelationInfo> userEventRelationInfos = userEventRelationsAdapter.GetAll();
             List<UserInfo> users = new List<UserInfo>();
             foreach (UserEventRelationInfo relationInfo in userEventRelationInfos)
@@ -151,7 +152,7 @@
 
         public static List<UserInfo> GetGoingUsers(Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             List<UserEventRelationInfo> userEventRelationInfos = userEventRelationsAdapter.GetAll();
             List<UserInfo> users = new List<UserInfo>();
             foreach (UserEventRelationInfo relationInfo in userEventRelationInfos)
@@ -168,7 +169,7 @@
 
         public static UserInfo GetEventOrganizer(Guid eventId)
         {
-            EventInfo eventInfo = GetEvent(eventId);
+            Entities.EventInfo eventInfo = GetEvent(eventId);
             return UsersManager.GetUser(eventInfo.OrganizerGUID);
         }
 
@@ -189,11 +190,11 @@
             return totalDonationAmount;
         }
 
-        public static List<EventInfo> GetEventsOfUser(Guid userId)
+        public static List<Entities.EventInfo> GetEventsOfUser(Guid userId)
         {
-            List<EventInfo> events = GetAllEvents();
-            List<EventInfo> eventsForUser = new List<EventInfo>();
-            foreach (EventInfo eventInfo in events)
+            List<Entities.EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> eventsForUser = new List<Entities.EventInfo>();
+            foreach (Entities.EventInfo eventInfo in events)
             {
                 if (eventInfo.OrganizerGUID == userId)
                 {
@@ -204,44 +205,44 @@
             return eventsForUser;
         }
 
-        public static List<EventInfo> SortEventsByPopularityAscending()
+        public static List<Entities.EventInfo> SortEventsByPopularityAscending()
         {
-            List<EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> events = GetAllEvents();
             events.Sort((firstEvent, secondEvent) => GetNumberOfParticipants(firstEvent.GUID).CompareTo(GetNumberOfParticipants(secondEvent.GUID)));
             return events;
         }
 
-        public static List<EventInfo> SortEventsByPopularityDescending()
+        public static List<Entities.EventInfo> SortEventsByPopularityDescending()
         {
-            List<EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> events = GetAllEvents();
             events.Sort((firstEvent, secondEvent) => GetNumberOfParticipants(secondEvent.GUID).CompareTo(GetNumberOfParticipants(firstEvent.GUID)));
             return events;
         }
 
-        public static List<EventInfo> SortEventsByDateAscending()
+        public static List<Entities.EventInfo> SortEventsByDateAscending()
         {
-            List<EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> events = GetAllEvents();
             events.Sort((firstEvent, secondEvent) => firstEvent.StartDate.CompareTo(secondEvent.StartDate));
             return events;
         }
 
-        public static List<EventInfo> SortEventsByDateDescending()
+        public static List<Entities.EventInfo> SortEventsByDateDescending()
         {
-            List<EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> events = GetAllEvents();
             events.Sort((firstEvent, secondEvent) => secondEvent.StartDate.CompareTo(firstEvent.StartDate));
             return events;
         }
 
-        public static List<EventInfo> SortEventsByPriceAscending()
+        public static List<Entities.EventInfo> SortEventsByPriceAscending()
         {
-            List<EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> events = GetAllEvents();
             events.Sort((firstEvent, secondEvent) => firstEvent.EntryFee.CompareTo(secondEvent.EntryFee));
             return events;
         }
 
-        public static List<EventInfo> SortEventsByPriceDescending()
+        public static List<Entities.EventInfo> SortEventsByPriceDescending()
         {
-            List<EventInfo> events = GetAllEvents();
+            List<Entities.EventInfo> events = GetAllEvents();
             events.Sort((firstEvent, secondEvent) => secondEvent.EntryFee.CompareTo(firstEvent.EntryFee));
             return events;
         }
@@ -255,18 +256,18 @@
             public List<string> Categories = categories;
         }
 
-        public static List<EventInfo> SearchEventByName(string nameString)
+        public static List<Entities.EventInfo> SearchEventByName(string nameString)
         {
-            List<EventInfo> allEvents = GetAllEvents();
-            List<EventInfo> filteredEvents = new List<EventInfo>();
+            List<Entities.EventInfo> allEvents = GetAllEvents();
+            List<Entities.EventInfo> filteredEvents = new List<Entities.EventInfo>();
             filteredEvents = allEvents.FindAll(eventItem => eventItem.EventName.ToLower().Contains(nameString.ToLower()));
             return filteredEvents;
         }
 
-        public static List<EventInfo> SearchEventByLocation(string locationString)
+        public static List<Entities.EventInfo> SearchEventByLocation(string locationString)
         {
-            List<EventInfo> allEvents = GetAllEvents();
-            List<EventInfo> filteredEvents = new List<EventInfo>();
+            List<Entities.EventInfo> allEvents = GetAllEvents();
+            List<Entities.EventInfo> filteredEvents = new List<Entities.EventInfo>();
             filteredEvents = allEvents.FindAll(eventItem => eventItem.Location.ToLower().Contains(locationString.ToLower()));
             return filteredEvents;
         }

@@ -35,6 +35,7 @@ namespace EventsApp
         private EventInfo GenerateEventInfo()
         {
             var eventInfo = default(EventInfo);
+            eventInfo.OrganizerGUID = this.edit ? AppStateManager.CurrentUserGUID : this.userId;
             eventInfo.GUID = this.edit ? this.eventId : Guid.NewGuid();
             eventInfo.EventName = this.TitleEntry.Text;
             eventInfo.Description = this.DescriptionEntry.Text;
@@ -48,7 +49,14 @@ namespace EventsApp
             DateTime endDateTime = new DateTime(dateTime.Year, dateTime.Month, dateTime.Day, endTime.Hours, endTime.Minutes, 0);
             eventInfo.StartDate = startDateTime;
             eventInfo.EndDate = endDateTime;
-            float.TryParse(this.PriceEntry.Text, out eventInfo.EntryFee);
+            try
+            {
+                eventInfo.EntryFee = float.Parse(this.PriceEntry.Text);
+            }
+            catch (Exception ex)
+            {
+                eventInfo.EntryFee = 0;
+            }
             eventInfo.BannerURL = this.LogoURLEntry.Text;
             eventInfo.LogoURL = this.LogoURLEntry.Text;
             eventInfo.MaxParticipants = 50;
