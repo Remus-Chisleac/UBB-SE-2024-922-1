@@ -52,7 +52,7 @@ namespace Moderation.DbEndpoints
                     response.EnsureSuccessStatusCode();
                     strResponseValue = response.Content.ReadAsStringAsync().Result;
                 }
-                return JsonSerializer.Deserialize<List<JoinRequest>>(strResponseValue);
+                return JsonSerializer.Deserialize<List<JoinRequest>>(strResponseValue) ?? throw new Exception("server returned empty list");
             }
             catch (Exception ex)
             {
