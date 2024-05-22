@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Internal;
 
 
 var MyAllowSpecificOrigins = "randomStringTheySay";
@@ -488,6 +489,12 @@ public class AppContext : DbContext
 
     public DbSet<Award> Awards { get; set; }
 
+    public DbSet<Role> Roles { get; set; }
+
+    public DbSet<Group> Groups { get; set; }
+    public DbSet<GroupUser> GroupUsers { get; set; }
+    public DbSet<JoinRequest> JoinRequests { get; set; }
+    public DbSet<JoinRequestAnswerToOneQuestion> JoinRequestAnswerToOneQuestion { get; set; }
     public AppContext(DbContextOptions<AppContext> options) : base(options)
     {
     }
@@ -501,4 +508,5 @@ public class AppContext : DbContext
         modelBuilder.Entity<UserEventRelationInfo>()
               .HasKey(m => new { m.EventGUID, m.UserGUID });
     }
+
 }
