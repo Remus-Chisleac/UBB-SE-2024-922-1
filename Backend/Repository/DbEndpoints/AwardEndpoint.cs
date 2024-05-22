@@ -7,14 +7,14 @@ namespace Moderation.DbEndpoints
 {
     public class AwardEndpoint
     {
-        private static string? serverAddress;
+        private readonly string serverAddress;
 
         public AwardEndpoint(string server)
         {
             serverAddress = server;
         }
 
-        public static void CreateAward(Award award)
+        public void CreateAward(Award award)
         {
             string call = "/award/add";
 
@@ -37,7 +37,7 @@ namespace Moderation.DbEndpoints
             }
         }
 
-        public static List<Award> ReadAwards()
+        public List<Award> ReadAwards()
         {
             string call = "/award";
             string strResponseValue;
@@ -62,7 +62,7 @@ namespace Moderation.DbEndpoints
             }
         }
 
-        public static void UpdateAward(Award award)
+        public void UpdateAward(Award award)
         {
             string call = "/award/update";
 
@@ -85,7 +85,7 @@ namespace Moderation.DbEndpoints
             }
         }
 
-        public static void DeleteAward(Guid id)
+        public void DeleteAward(Guid id)
         {
             string call = $"/award/delete/{id}";
 

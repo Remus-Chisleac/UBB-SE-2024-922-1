@@ -6,40 +6,43 @@ namespace Moderation.Repository
 {
     public class AwardRepository : IAwardRepository
     {
-        public AwardRepository() : base()
+        private AwardEndpoint awardEndpoint;
+
+        public AwardRepository(AwardEndpoint awardEndpoint) : base()
         {
+            this.awardEndpoint = awardEndpoint;
         }
 
         public bool Add(Guid key, Award value)
         {
-            AwardEndpoint.CreateAward(value);
+            awardEndpoint.CreateAward(value);
             return true;
         }
 
         public bool Contains(Guid key)
         {
-            return AwardEndpoint.ReadAwards().Exists(a => a.Id == key);
+            return awardEndpoint.ReadAwards().Exists(a => a.Id == key);
         }
 
         public Award? Get(Guid key)
         {
-            return AwardEndpoint.ReadAwards().Find(a => a.Id == key);
+            return awardEndpoint.ReadAwards().Find(a => a.Id == key);
         }
 
         public IEnumerable<Award> GetAll()
         {
-            return AwardEndpoint.ReadAwards();
+            return awardEndpoint.ReadAwards();
         }
 
         public bool Remove(Guid key)
         {
-            AwardEndpoint.DeleteAward(key);
+            awardEndpoint.DeleteAward(key);
             return true;
         }
 
         public bool Update(Guid key, Award award)
         {
-            AwardEndpoint.UpdateAward(award);
+            awardEndpoint.UpdateAward(award);
             return true;
         }
     }
