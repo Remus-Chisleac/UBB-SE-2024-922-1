@@ -12,7 +12,7 @@ namespace Moderation.Test
         [SetUp]
         public void Setup()
         {
-            GroupRepository = new GroupRepository();
+            GroupRepository = new GroupRepository(new DbEndpoints.GroupEndpoints("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"));
         }
 
         [Test]

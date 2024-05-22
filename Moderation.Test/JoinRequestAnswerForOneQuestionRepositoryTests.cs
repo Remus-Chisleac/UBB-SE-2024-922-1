@@ -8,12 +8,22 @@ namespace Moderation.Test
 {
     public class JoinRequestAnswerForOneQuestionRepositoryTests
     {
+        private JoinRequestAnswerForOneQuestionRepository repository;
+
+        [SetUp]
+        public void Setup()
+        {
+            repository = new JoinRequestAnswerForOneQuestionRepository(
+                new DbEndpoints.JoinRequestAnswerForOneQuestionEndpoints(
+                    "Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"
+                    ));
+        }
+
         [Test]
         public void Add_SuccessfullyAddsJoinRequestAnswerForOneQuestion()
         {
             var joinRequestAnswer = new JoinRequestAnswerToOneQuestion(Guid.NewGuid(), Guid.NewGuid(), "Sample question", "Sample answer");
-            var repository = new JoinRequestAnswerForOneQuestionRepository();
-
+            
             repository.Add(joinRequestAnswer.Id, joinRequestAnswer);
 
             Assert.IsTrue(repository.Contains(joinRequestAnswer.Id));
@@ -24,8 +34,7 @@ namespace Moderation.Test
         {
             var joinRequestAnswer = new JoinRequestAnswerToOneQuestion(Guid.NewGuid(), Guid.NewGuid(), "Sample question", "Sample answer");
             var data = new Dictionary<Guid, JoinRequestAnswerToOneQuestion> { { joinRequestAnswer.Id, joinRequestAnswer } };
-            var repository = new JoinRequestAnswerForOneQuestionRepository(data);
-
+            
             var result = repository.Contains(joinRequestAnswer.Id);
 
             Assert.IsTrue(!result);
@@ -34,7 +43,6 @@ namespace Moderation.Test
         [Test]
         public void Contains_ReturnsFalseWhenJoinRequestAnswerDoesNotExist()
         {
-            var repository = new JoinRequestAnswerForOneQuestionRepository();
             var nonExistentId = Guid.NewGuid();
 
             var result = repository.Contains(nonExistentId);
@@ -47,7 +55,6 @@ namespace Moderation.Test
         {
             var joinRequestAnswer = new JoinRequestAnswerToOneQuestion(Guid.NewGuid(), Guid.NewGuid(), "Sample question", "Sample answer");
             var data = new Dictionary<Guid, JoinRequestAnswerToOneQuestion> { { joinRequestAnswer.Id, joinRequestAnswer } };
-            var repository = new JoinRequestAnswerForOneQuestionRepository(data);
             var result = repository.Get(joinRequestAnswer.Id);
 
             Assert.That(result, Is.Not.EqualTo(joinRequestAnswer));
@@ -56,7 +63,6 @@ namespace Moderation.Test
         [Test]
         public void Get_ReturnsNullWhenJoinRequestAnswerDoesNotExist()
         {
-            var repository = new JoinRequestAnswerForOneQuestionRepository();
             var nonExistentId = Guid.NewGuid();
 
             var result = repository.Get(nonExistentId);
@@ -74,7 +80,6 @@ namespace Moderation.Test
                 { joinRequestAnswer1.Id, joinRequestAnswer1 },
                 { joinRequestAnswer2.Id, joinRequestAnswer2 }
             };
-            var repository = new JoinRequestAnswerForOneQuestionRepository(data);
             var rez = repository.GetAll();
 
 
@@ -86,9 +91,6 @@ namespace Moderation.Test
         [Test]
         public void Remove_ThrowsException()
         {
-
-            var repository = new JoinRequestAnswerForOneQuestionRepository();
-
             Assert.That(repository.Remove(Guid.NewGuid()), Is.EqualTo(true));
         }
 
@@ -97,7 +99,6 @@ namespace Moderation.Test
         {
 
             var joinRequestAnswer = new JoinRequestAnswerToOneQuestion(Guid.NewGuid(), Guid.NewGuid(), "Sample question", "Sample answer");
-            var repository = new JoinRequestAnswerForOneQuestionRepository();
             repository.Add(joinRequestAnswer.Id, joinRequestAnswer);
 
             var updatedAnswer = new JoinRequestAnswerToOneQuestion(joinRequestAnswer.Id, joinRequestAnswer.RequestId, "Updated question", "Updated answer");
