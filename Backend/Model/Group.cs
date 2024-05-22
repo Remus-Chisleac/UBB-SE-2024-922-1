@@ -10,7 +10,7 @@ namespace Moderation.Model
         public string Description { get; set; }
         public User Creator { get; }
         public QuestionRepository GroupEntryQuestions { get; }
-        public RoleRepository Roles { get; }
+        public Dictionary<Guid, Role> Roles { get; }
         public Dictionary<User, Role> GroupMembers { get; }
         public Group(string name, string description, User creator)
         {
