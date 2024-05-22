@@ -6,52 +6,48 @@ namespace Moderation.Repository
 {
     public class UserRepository : IUserRepository
     {
-        protected readonly Dictionary<Guid, User> data;
+        private UserEndpoints userEndpoints;
 
-        public UserRepository(Dictionary<Guid, User> data)
+        public UserRepository(UserEndpoints userEndpoints) : base()
         {
-            this.data = data;
-        }
-
-        public UserRepository() : base()
-        {
+            this.userEndpoints = userEndpoints;
         }
 
         public bool Add(Guid key, User value)
         {
-            UserEndpoints.CreateUser(value);
+            userEndpoints.CreateUser(value);
             return true;
         }
 
         public bool Contains(Guid key)
         {
-            return UserEndpoints.ReadAllUsers().Exists(u => u.Id == key);
+            return userEndpoints.ReadAllUsers().Exists(u => u.Id == key);
         }
 
         public User? Get(Guid key)
         {
-            return UserEndpoints.ReadAllUsers().Find(u => u.Id == key);
+            return userEndpoints.ReadAllUsers().Find(u => u.Id == key);
         }
 
         public IEnumerable<User> GetAll()
         {
-            return UserEndpoints.ReadAllUsers();
+            return userEndpoints.ReadAllUsers();
         }
 
         public bool Remove(Guid key)
         {
-            UserEndpoints.DeleteUser(key);
+            userEndpoints.DeleteUser(key);
             return true;
         }
 
         public bool Update(Guid key, User value)
         {
-            UserEndpoints.UpdateUser(value);
+            userEndpoints.UpdateUser(value);
             return true;
         }
         public Guid? GetGuidByName(string name)
         {
-            return UserEndpoints.ReadAllUsers().Find(u => u.Username == name)?.Id;
+            return userEndpoints.ReadAllUsers().Find(u => u.Username == name)?.Id;
         }
     }
 }

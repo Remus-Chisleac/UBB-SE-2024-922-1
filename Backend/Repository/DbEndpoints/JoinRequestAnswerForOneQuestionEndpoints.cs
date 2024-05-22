@@ -7,14 +7,14 @@ namespace Moderation.DbEndpoints
 {
     public class JoinRequestAnswerForOneQuestionEndpoints
     {
-        private static string? serverAddress;
+        private readonly string serverAddress;
 
         public JoinRequestAnswerForOneQuestionEndpoints(string server)
         {
             serverAddress = server;
         }
 
-        public static void CreateQuestion(JoinRequestAnswerToOneQuestion question)
+        public void CreateQuestion(JoinRequestAnswerToOneQuestion question)
         {
             string call = "/joinquestion/add";
 
@@ -36,7 +36,7 @@ namespace Moderation.DbEndpoints
                 Console.WriteLine(ex.Message);
             }
         }
-        public static List<JoinRequestAnswerToOneQuestion> ReadQuestion()
+        public List<JoinRequestAnswerToOneQuestion> ReadQuestion()
         {
             string call = "/joinquestion";
             string strResponseValue;
@@ -60,7 +60,7 @@ namespace Moderation.DbEndpoints
                 return new List<JoinRequestAnswerToOneQuestion>();
             }
         }
-        public static void UpdateQuestion(JoinRequestAnswerToOneQuestion question)
+        public void UpdateQuestion(JoinRequestAnswerToOneQuestion question)
         {
             string call = "/joinquestion/update";
 
@@ -82,7 +82,7 @@ namespace Moderation.DbEndpoints
                 Console.WriteLine(ex.Message);
             }
         }
-        public static void DeleteQuestion(JoinRequestAnswerToOneQuestion question)
+        public void DeleteQuestion(JoinRequestAnswerToOneQuestion question)
         {
             string call = $"/award/delete";
 
