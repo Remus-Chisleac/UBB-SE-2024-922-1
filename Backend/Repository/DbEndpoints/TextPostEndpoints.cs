@@ -1,5 +1,6 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Entities;
 using Moderation.Model;
 
@@ -7,44 +8,33 @@ namespace Moderation.DbEndpoints
 {
     public class TextPostEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateTextPost(TextPost textPost)
+        private readonly string serverAddress;
+
+        public TextPostEndpoints(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
+            serverAddress = server;
+        }
+
+        public void CreateTextPost(TextPost textPost)
+        {
+            string call = "/textpost/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(textPost), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
-
-            string insertPostSql = "INSERT INTO Post (PostId, Content, UserId, Score, Status, IsDeleted, GroupId) " +
-                                   "VALUES (@Id, @Content, @UserId, @Score, @Status, @IsDeleted, @GroupId)";
-
-            using (SqlCommand command = new (insertPostSql, connection))
-            {
-                command.Parameters.AddWithValue("@Id", textPost.Id);
-                command.Parameters.AddWithValue("@Content", textPost.Content);
-                command.Parameters.AddWithValue("@UserId", textPost.Author.Id);
-                command.Parameters.AddWithValue("@Score", textPost.Score);
-                command.Parameters.AddWithValue("@Status", textPost.Status);
-                command.Parameters.AddWithValue("@IsDeleted", textPost.IsDeleted);
-                command.Parameters.AddWithValue("@GroupId", textPost.Author.GroupId);
-
-                command.ExecuteNonQuery();
-            }
-
-            // Insert hardcodedAwards for the post into PostAward table
-            foreach (Award award in textPost.Awards)
-            {
-                string insertPostAwardSql = "INSERT INTO PostAward (AwardId, Id) VALUES (@AwardId, @Id)";
-                using SqlCommand awardCommand = new (insertPostAwardSql, connection);
-                awardCommand.Parameters.AddWithValue("@AwardId", award.Id);
-                awardCommand.Parameters.AddWithValue("@Id", textPost.Id);
-                awardCommand.ExecuteNonQuery();
+                Console.WriteLine(ex.Message);
             }
         }
         public static List<TextPost> ReadAllTextPosts()
@@ -88,37 +78,29 @@ namespace Moderation.DbEndpoints
 
             return textPosts;
         }
-        private static List<Award> ReadAwardsForPost(Guid postId)
+        private List<Award> ReadAwardsForPost(Guid postId)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/award";
+            string strResponseValue;
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<Award>>(strResponseValue);
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return [];
+                Console.WriteLine(ex.Message);
+                return new List<Award>();
             }
-            List<Award> awards = [];
-
-            string sql = "SELECT a.AwardId, a.Type " +
-                         "FROM Award a " +
-                         "INNER JOIN PostAward pa ON a.AwardId = pa.AwardId " +
-                         "WHERE pa.PostId = @Id";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", postId);
-
-            using SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                Guid awardId = reader.GetGuid(0);
-                Award award = new () { Id = awardId, AwardTypeObj = (Award.AwardType)Enum.Parse(typeof(Award.AwardType), reader.GetString(1)) };
-                awards.Add(award);
-            }
-
-            return awards;
         }
         public static void DeleteTextPost(Guid postId)
         {
