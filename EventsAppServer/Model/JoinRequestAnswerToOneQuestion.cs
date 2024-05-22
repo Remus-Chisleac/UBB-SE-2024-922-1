@@ -7,6 +7,7 @@
         public string QuestionText { get; set; }
 
         public string QuestionAnswer { get; set; }
+        public JoinRequestAnswerToOneQuestion() { }
 
         public JoinRequestAnswerToOneQuestion(Guid requestId, string text, string answer)
         {
