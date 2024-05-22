@@ -10,9 +10,6 @@ namespace Moderation.Repository
         {
             this.data = data;
         }
-        public GroupRules() : base()
-        {
-        }
 
         // public IEnumerable<GroupRules> GetGroupRulesByGroup(Guid groupId)
         // {

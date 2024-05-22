@@ -6,39 +6,37 @@ namespace Moderation.Repository
 {
     public class JoinRequestRepository : IJoinRequestRepository
     {
-        protected readonly Dictionary<Guid, JoinRequest> data;
-        public JoinRequestRepository(Dictionary<Guid, JoinRequest> data)
+        private JoinRequestEndpoints joinRequestEndpoints;
+
+        public JoinRequestRepository(JoinRequestEndpoints joinRequestEndpoints) : base()
         {
-            this.data = data;
-        }
-        public JoinRequestRepository() : base()
-        {
+            this.joinRequestEndpoints = joinRequestEndpoints;
         }
 
         public bool Add(Guid key, JoinRequest value)
         {
-            JoinRequestEndpoints.CreateJoinRequest(value);
+            joinRequestEndpoints.CreateJoinRequest(value);
             return true;
         }
 
         public bool Contains(Guid key)
         {
-            return JoinRequestEndpoints.ReadAllJoinRequests().Exists(a => a.Id == key);
+            return joinRequestEndpoints.ReadAllJoinRequests().Exists(a => a.Id == key);
         }
 
         public JoinRequest? Get(Guid key)
         {
-            return JoinRequestEndpoints.ReadAllJoinRequests().Find(a => a.Id == key);
+            return joinRequestEndpoints.ReadAllJoinRequests().Find(a => a.Id == key);
         }
 
         public IEnumerable<JoinRequest> GetAll()
         {
-            return JoinRequestEndpoints.ReadAllJoinRequests();
+            return joinRequestEndpoints.ReadAllJoinRequests();
         }
 
         public bool Remove(Guid key)
         {
-            JoinRequestEndpoints.DeleteJoinRequest(key);
+            joinRequestEndpoints.DeleteJoinRequest(key);
             return true;
         }
 

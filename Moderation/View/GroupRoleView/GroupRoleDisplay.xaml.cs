@@ -23,7 +23,7 @@ public partial class GroupRoleDisplay : ContentPage
         {
             var currentGroup = currentSession.Group;
 
-            if (currentGroup.Roles.Contains(role.Id))
+            if (currentGroup.Roles.ContainsKey(role.Id))
             {
                 foreach (var user in currentGroup.GroupMembers)
                 {

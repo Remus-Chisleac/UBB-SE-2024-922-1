@@ -1,108 +1,109 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Model;
 
 namespace Moderation.DbEndpoints
 {
     public class ReportEndpoint
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreatePostReport(PostReport postReport)
+        private readonly string serverAddress;
+
+        public ReportEndpoint(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
-
-            string sql = "INSERT INTO Report (ReportId, UserId, PostId, Message, GroupId) " +
-                         "VALUES (@ReportId, @UserId, @PostId, @Message, @GroupId)";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@ReportId", postReport.Id);
-            command.Parameters.AddWithValue("@UserId", postReport.UserId);
-            command.Parameters.AddWithValue("@PostId", postReport.PostId);
-            command.Parameters.AddWithValue("@Message", postReport.Message);
-            command.Parameters.AddWithValue("@GroupId", postReport.GroupId);
-            command.ExecuteNonQuery();
+            serverAddress = server;
         }
 
-        public static List<PostReport> ReadAllPostReports()
+        public void CreatePostReport(PostReport postReport)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/report/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(postReport), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return [];
+                Console.WriteLine(ex.Message);
             }
-            List<PostReport> postReports = [];
-
-            string sql = "SELECT ReportId, UserId, PostId, Message, GroupId FROM Report";
-
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                PostReport postReport = new (reader.GetGuid(0), reader.GetGuid(1), reader.GetGuid(2), reader.GetString(3), reader.GetGuid(4));
-                postReports.Add(postReport);
-            }
-
-            return postReports;
         }
 
-        public static void DeletePostReport(Guid reportId)
+        public List<PostReport> ReadAllPostReports()
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/report";
+            string strResponseValue;
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<PostReport>>(strResponseValue) ?? throw new Exception("server returned empty list");
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
+                return new List<PostReport>();
             }
-
-            string sql = "DELETE FROM Report WHERE ReportId = @ReportId";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@ReportId", reportId);
-
-            command.ExecuteNonQuery();
         }
 
-        public static void UpdatePostReport(Guid id, PostReport postReport)
+        public void UpdatePostReport(Guid id, PostReport postReport)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/report/update";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(postReport), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-            string sqlCommandString = "UPDATE Report" +
-                                      $"SET UserId = {postReport.UserId}," +
-                                      $"PostId = {postReport.PostId}," +
-                                      $"Message = {postReport.Message}," +
-                                      $"GroupId = {postReport.GroupId}" +
-                                      $"WHERE ReportId = {id}";
+        }
 
-            using SqlCommand command = new (sqlCommandString, connection);
+        public void DeletePostReport(Guid reportId)
+        {
+            string call = $"/award/delete/{reportId}";
 
-            command.ExecuteNonQuery();
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
