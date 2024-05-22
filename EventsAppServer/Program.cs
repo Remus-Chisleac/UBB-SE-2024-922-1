@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using EventsAppServer.DbEndpoints;
+using EventsAppServer.Endpoints;
 
 
 var MyAllowSpecificOrigins = "randomStringTheySay";
@@ -57,6 +58,9 @@ DataBaseAdapter<DonationInfo> DonationsDataBaseAdapter = app.Services.GetRequire
 
 AppContext appContrext = new AppContext(new DbContextOptionsBuilder<AppContext>().UseSqlServer(connectionString).Options);
 AwardEndpoint awardEndpoint = new AwardEndpoint(appContrext);
+TextPostEndpoint textPostEndpoint = new TextPostEndpoint(appContrext);
+UserEndpoint userEndpoint = new UserEndpoint(appContrext);
+ReportEndpoint reportEndpoint = new ReportEndpoint(appContrext);
 
 #region GetAll
 app.MapGet("/GetAll/Users", () =>
@@ -476,30 +480,110 @@ app.MapGet("/Contains/Donations/{GUID}", (Guid GUID) =>
 #region Award
 app.MapGet("/award", () =>
 {
-    Console.WriteLine("GetAll/Users");
+    Console.WriteLine("GetAll/Awards");
 
     return awardEndpoint.ReadAwards();
 });
 
 app.MapPost("/award/add", (Award award) =>
 {
-    Console.WriteLine("Add/User");
+    Console.WriteLine("Add/Award");
     awardEndpoint.CreateAward(award);
 });
 
 app.MapPut("/award/update", (Award award) =>
 {
-    Console.WriteLine("Update/User");
+    Console.WriteLine("Update/Award");
     awardEndpoint.UpdateAward(award);
 });
 
 app.MapDelete("/award/delete/{id}", (Guid GUID) =>
 {
-    Console.WriteLine("Delete/User");
+    Console.WriteLine("Delete/Award");
     awardEndpoint.DeleteAward(GUID);
 });
 #endregion
 
+#region TextPost
+app.MapGet("/textPost", () =>
+{
+    Console.WriteLine("GetAll/TextPosts");
+    textPostEndpoint.ReadTextPosts();
+});
+
+app.MapPost("/textPost/add", (TextPost textPost) =>
+{
+    Console.WriteLine("Add/TextPost");
+    textPostEndpoint.CreateTextPost(textPost);
+});
+
+app.MapPut("/textPost/update", (TextPost textPost) =>
+{
+    Console.WriteLine("Update/TextPost");
+    textPostEndpoint.UpdateTextPost(textPost);
+});
+
+app.MapDelete("/textPost/delete/{id}", (Guid GUID) =>
+{
+    Console.WriteLine("Delete/TextPost");
+    textPostEndpoint.DeleteTextPost(GUID);
+});
+#endregion
+
+#region UserInfo
+app.MapGet("/user", () =>
+{
+    Console.WriteLine("GetAll/UserInfo");
+    return userEndpoint.ReadUsers();
+});
+
+app.MapPost("/user/add", (UserInfo user) =>
+{
+    Console.WriteLine("Add/UserInfo");
+    userEndpoint.CreateUser(user);
+});
+
+app.MapPut("/user/update", (UserInfo user) =>
+{
+    Console.WriteLine("Update/UserInfo");
+    userEndpoint.UpdateUser(user);
+});
+
+app.MapDelete("/user/delete/{id}", (Guid GUID) =>
+{
+    Console.WriteLine("Delete/UserInfo");
+    userEndpoint.DeleteUser(GUID);
+})
+
+
+#endregion
+
+#region PostReport
+app.MapGet("/postReport", () =>
+{
+    Console.WriteLine("GetAll/PostReports");
+    return reportEndpoint.ReadReports();
+});
+
+app.MapPost("/postReport/add", (PostReport postReport) =>
+{
+    Console.WriteLine("Add/PostReport");
+    reportEndpoint.CreateReport(postReport);
+});
+
+app.MapPut("/postReport/update", (PostReport postReport) =>
+{
+    Console.WriteLine("Update/PostReport");
+    reportEndpoint.UpdateReport(postReport);
+});
+
+app.MapDelete("/postReport/delete/{id}", (Guid GUID) =>
+{
+    Console.WriteLine("Delete/PostReport");
+    reportEndpoint.DeleteReport(GUID);
+});
+
+#endregion
 
 
 app.Run();
@@ -514,6 +598,8 @@ public class AppContext : DbContext
     public DbSet<AdminInfo> Admins { get; set; }
     public DbSet<UserEventRelationInfo> UserEventRelations { get; set; }
     public DbSet<DonationInfo> Donations { get; set; }
+    public DbSet<TextPost> TextPosts { get; set; }
+    public DbSet<PostReport> PostReports { get; set; }
 
     public DbSet<Award> Awards { get; set; }
 
