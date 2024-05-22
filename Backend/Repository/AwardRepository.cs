@@ -6,11 +6,6 @@ namespace Moderation.Repository
 {
     public class AwardRepository : IAwardRepository
     {
-        protected readonly Dictionary<Guid, Award> data;
-        public AwardRepository(Dictionary<Guid, Award> data)
-        {
-            this.data = data;
-        }
         public AwardRepository() : base()
         {
         }
