@@ -7,14 +7,15 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using EventsAppServer.DbEndpoints;
 
 
 var MyAllowSpecificOrigins = "randomStringTheySay";
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
-builder.Services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
-
+// builder.Services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
+//
 if (connectionString == null)
 {
     Console.WriteLine("No connection string found");
@@ -53,7 +54,9 @@ DataBaseAdapter<UserEventRelationInfo> UserEventRelationsDataBaseAdapter = app.S
 DataBaseAdapter<DonationInfo> DonationsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<DonationInfo>>() ?? throw new Exception();
 
 
-AppContext appContrext = app.Services.GetRequiredService<AppContext>();
+
+AppContext appContrext = new AppContext(new DbContextOptionsBuilder<AppContext>().UseSqlServer(connectionString).Options);
+AwardEndpoint awardEndpoint = new AwardEndpoint(appContrext);
 
 #region GetAll
 app.MapGet("/GetAll/Users", () =>
@@ -470,7 +473,32 @@ app.MapGet("/Contains/Donations/{GUID}", (Guid GUID) =>
 
 #endregion
 
+#region Award
+app.MapGet("/award", () =>
+{
+    Console.WriteLine("GetAll/Users");
 
+    return awardEndpoint.ReadAwards();
+});
+
+app.MapPost("/award/add", (Award award) =>
+{
+    Console.WriteLine("Add/User");
+    awardEndpoint.CreateAward(award);
+});
+
+app.MapPut("/award/update", (Award award) =>
+{
+    Console.WriteLine("Update/User");
+    awardEndpoint.UpdateAward(award);
+});
+
+app.MapDelete("/award/delete/{id}", (Guid GUID) =>
+{
+    Console.WriteLine("Delete/User");
+    awardEndpoint.DeleteAward(GUID);
+});
+#endregion
 
 
 

@@ -1,113 +1,106 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
-using Moderation.Entities;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Model;
-using Moderation.Serivce;
 
 namespace Moderation.DbEndpoints
 {
-    internal class GroupEndpoints
+    public class GroupEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateGroup(Group group)
+        private readonly string serverAddress;
+
+        public GroupEndpoints(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureazureTrialExpired)
-            {
-                Console.WriteLine(azureazureTrialExpired.Message);
-                return;
-            }
-
-            string sql = "INSERT INTO [Group] (Id, Name, Description, Owner) " +
-                         "VALUES (@Id, @Name, @Description, @Owner)";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", group.Id);
-            command.Parameters.AddWithValue("@Name", group.Name);
-            command.Parameters.AddWithValue("@Description", group.Description);
-            command.Parameters.AddWithValue("@Owner", group.Creator.Id);
-
-            command.ExecuteNonQuery();
+            serverAddress = server;
         }
-        public static List<Group> ReadAllGroups()
+
+        public void CreateGroup(Group group)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/group/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(group), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureazureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureazureTrialExpired.Message);
-                return [];
+                Console.WriteLine(ex.Message);
             }
-
-            List<Group> groups = [];
-            string sql = "SELECT Id, Name, Description, Owner FROM [Group]";
-
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                var userId = reader.GetGuid(3);
-                string username = ApplicationState.Get()
-                    .UserRepository?.Get(userId)?
-                    .Username // if anything is null along the way throw an exception:
-                    ?? throw new Exception("No username by that id");
-                User user = new (userId, username);
-
-                Group group = new (reader.GetGuid(0), reader.GetString(1), reader.GetString(2), user);
-                groups.Add(group);
-            }
-            return groups;
         }
-        public static void UpdateGroup(Group group)
+        public List<Group> ReadAllGroups()
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/group";
+            string strResponseValue;
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<Group>>(strResponseValue);
             }
-            catch (SqlException azureazureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureazureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
+                return new List<Group>();
             }
-            string sql = "UPDATE Group" +
-                         "SET Name = @Name, Description = @Description, Owner = @Owner" +
-                         "WHERE Id = @Id";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Name", group.Name);
-            command.Parameters.AddWithValue("@Description", group.Description);
-            command.Parameters.AddWithValue("@Owner", group.Creator.Id);
-
-            command.ExecuteNonQuery();
         }
-        public static void DeleteGroup(Guid id)
+        public void UpdateGroup(Group group)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/group/update";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(group), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureazureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureazureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
+        }
+        public void DeleteGroup(Guid id)
+        {
+            string call = $"/group/delete/{id}";
 
-            string sql = "DELETE FROM Group WHERE Id = @Id";
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", id);
-
-            command.ExecuteNonQuery();
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

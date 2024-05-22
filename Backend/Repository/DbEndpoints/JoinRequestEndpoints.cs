@@ -1,4 +1,7 @@
 ﻿using System.Configuration;
+using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Microsoft.Data.SqlClient;
 using Moderation.Entities;
 
@@ -6,25 +9,34 @@ namespace Moderation.DbEndpoints
 {
     public class JoinRequestEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateJoinRequest(JoinRequest joinRequest)
+        private readonly string serverAddress;
+
+        public JoinRequestEndpoints(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
+            serverAddress = server;
+        }
+
+        public void CreateJoinRequest(JoinRequest joinRequest)
+        {
+            string call = "/joinrequest/add";
+
             try
             {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            string insertJoinRequestSql = "INSERT INTO JoinRequest (Id, UserId) VALUES (@Id, @UserId)";
-            using SqlCommand command = new (insertJoinRequestSql, connection);
-            command.Parameters.AddWithValue("@Id", joinRequest.Id);
-            command.Parameters.AddWithValue("@UserId", joinRequest.UserId);
-            command.ExecuteNonQuery();
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(joinRequest), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
         public static List<JoinRequest> ReadAllJoinRequests()
         {
