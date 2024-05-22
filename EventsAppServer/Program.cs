@@ -16,7 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 builder.Services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
-//
+
 if (connectionString == null)
 {
     Console.WriteLine("No connection string found");
@@ -537,7 +537,7 @@ app.MapDelete("/user/delete/{id}", (Guid GUID) =>
 {
     Console.WriteLine("Delete/UserInfo");
     userEndpoint.DeleteUser(GUID);
-})
+});
 
 
 #endregion
