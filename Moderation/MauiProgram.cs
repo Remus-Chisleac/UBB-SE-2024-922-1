@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 using Moderation.Repository;
 using Backend.Repository.Interfaces;
 using Backend.Repository;
@@ -6,6 +7,7 @@ using Moderation.Serivce;
 using Backend.Service;
 using EventsApp;
 using EventsApp.Logic.Managers;
+using Moderation.DbEndpoints;
 
 namespace Moderation
 {
@@ -23,6 +25,18 @@ namespace Moderation
                     fonts.AddFont("BAHNSCHRIFT.TTF", "Bahnschrift");
                 });
 
+            // var serverAddress = builder.Configuration;
+            string serverAddress = "http://localhost:5043";
+
+            builder.Services.AddSingleton(new AwardEndpoint(serverAddress));
+            builder.Services.AddSingleton(new GroupEndpoints(serverAddress));
+            builder.Services.AddSingleton(new GroupUserEndpoints(serverAddress));
+            builder.Services.AddSingleton(new JoinRequestAnswerForOneQuestionEndpoints(serverAddress));
+            builder.Services.AddSingleton(new JoinRequestEndpoints(serverAddress));
+            builder.Services.AddSingleton(new ReportEndpoint(serverAddress));
+            builder.Services.AddSingleton(new RoleEndpoints(serverAddress));
+            builder.Services.AddSingleton(new TextPostEndpoints(serverAddress));
+            builder.Services.AddSingleton(new UserEndpoints(serverAddress));
             builder.Services.AddScoped<IGroupRepository, GroupRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
