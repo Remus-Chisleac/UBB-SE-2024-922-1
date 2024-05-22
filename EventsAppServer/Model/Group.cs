@@ -11,6 +11,7 @@ namespace EventsAppServer.Entities
         public QuestionRepository GroupEntryQuestions { get; }
         public Dictionary<Guid, Role> Roles { get; }
         public Dictionary<User, Role> GroupMembers { get; }
+        public Group() { }
         public Group(string name, string description, User creator)
         {
             Id = Guid.NewGuid();

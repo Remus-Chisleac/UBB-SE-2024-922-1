@@ -35,6 +35,7 @@ namespace EventsApp
         private EventInfo GenerateEventInfo()
         {
             var eventInfo = default(EventInfo);
+            eventInfo.OrganizerGUID = this.edit ? AppStateManager.CurrentUserGUID : this.userId;
             eventInfo.GUID = this.edit ? this.eventId : Guid.NewGuid();
             eventInfo.EventName = this.TitleEntry.Text;
             eventInfo.Description = this.DescriptionEntry.Text;
