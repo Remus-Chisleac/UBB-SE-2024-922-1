@@ -13,6 +13,7 @@ namespace Moderation.Repository
         }
         public JoinRequestAnswerForOneQuestionRepository() : base()
         {
+            data = [];
         }
 
         public bool Add(Guid key, JoinRequestAnswerToOneQuestion value)

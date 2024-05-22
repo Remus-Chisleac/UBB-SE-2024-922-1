@@ -12,8 +12,7 @@ namespace Moderation.Test
         public void Add_SuccessfullyAddsJoinRequestAnswerForOneQuestion()
         {
             var joinRequestAnswer = new JoinRequestAnswerToOneQuestion(Guid.NewGuid(), Guid.NewGuid(), "Sample question", "Sample answer");
-            var data = new Dictionary<Guid, JoinRequestAnswerToOneQuestion>();
-            var repository = new JoinRequestAnswerForOneQuestionRepository(data);
+            var repository = new JoinRequestAnswerForOneQuestionRepository();
 
             repository.Add(joinRequestAnswer.Id, joinRequestAnswer);
 
@@ -35,8 +34,7 @@ namespace Moderation.Test
         [Test]
         public void Contains_ReturnsFalseWhenJoinRequestAnswerDoesNotExist()
         {
-            var data = new Dictionary<Guid, JoinRequestAnswerToOneQuestion>();
-            var repository = new JoinRequestAnswerForOneQuestionRepository(data);
+            var repository = new JoinRequestAnswerForOneQuestionRepository();
             var nonExistentId = Guid.NewGuid();
 
             var result = repository.Contains(nonExistentId);
@@ -58,8 +56,7 @@ namespace Moderation.Test
         [Test]
         public void Get_ReturnsNullWhenJoinRequestAnswerDoesNotExist()
         {
-            var data = new Dictionary<Guid, JoinRequestAnswerToOneQuestion>();
-            var repository = new JoinRequestAnswerForOneQuestionRepository(data);
+            var repository = new JoinRequestAnswerForOneQuestionRepository();
             var nonExistentId = Guid.NewGuid();
 
             var result = repository.Get(nonExistentId);
