@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
-using EventsAppServer.Entities;
+﻿using EventsAppServer.Entities;
 
 namespace EventsAppServer.DbEndpoints
 {

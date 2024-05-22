@@ -1,7 +1,4 @@
-﻿using System.Configuration;
-
-using EventsAppServer.Entities;
-
+﻿using EventsAppServer.Entities;
 
 namespace EventsAppServer.DbEndpoints
 {

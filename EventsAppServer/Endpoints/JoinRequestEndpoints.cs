@@ -1,7 +1,4 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
-using EventsAppServer.Entities;
-using Microsoft.AspNetCore.Mvc.Formatters;
+﻿using EventsAppServer.Entities;
 
 namespace EventsAppServer.DbEndpoints
 {
