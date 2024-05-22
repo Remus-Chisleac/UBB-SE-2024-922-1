@@ -13,20 +13,14 @@ var MyAllowSpecificOrigins = "randomStringTheySay";
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
-// builder.Services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddDbContext<AppContext>(options => options.UseSqlServer(connectionString));
 //
 if (connectionString == null)
 {
     Console.WriteLine("No connection string found");
     return;
 }
-builder.Services.AddSingleton(new DataBaseAdapter<UserInfo>(connectionString));
-builder.Services.AddSingleton(new DataBaseAdapter<EventInfo>(connectionString));
-builder.Services.AddSingleton(new DataBaseAdapter<ReportInfo>(connectionString));
-builder.Services.AddSingleton(new DataBaseAdapter<ReviewInfo>(connectionString));
-builder.Services.AddSingleton(new DataBaseAdapter<AdminInfo>(connectionString));
-builder.Services.AddSingleton(new DataBaseAdapter<UserEventRelationInfo>(connectionString));
-builder.Services.AddSingleton(new DataBaseAdapter<DonationInfo>(connectionString));
+builder.Services.AddScoped<AwardEndpoint>();
 
 builder.Services.AddCors(options =>
 {
@@ -44,21 +38,12 @@ var app = builder.Build();
 
 app.UseCors(MyAllowSpecificOrigins);
 
-DataBaseAdapter<UserInfo> UsersDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<UserInfo>>() ?? throw new Exception();
-DataBaseAdapter<EventInfo> EventsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<EventInfo>>() ?? throw new Exception();
-DataBaseAdapter<ReportInfo> ReportsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<ReportInfo>>() ?? throw new Exception();
-DataBaseAdapter<ReviewInfo> ReviewsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<ReviewInfo>>() ?? throw new Exception();
-DataBaseAdapter<AdminInfo> AdminsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<AdminInfo>>() ?? throw new Exception();
-DataBaseAdapter<UserEventRelationInfo> UserEventRelationsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<UserEventRelationInfo>>() ?? throw new Exception();
-DataBaseAdapter<DonationInfo> DonationsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<DonationInfo>>() ?? throw new Exception();
 
-
-// AppContext appContrext = app.Services.GetService<AppContext>();
-AppContext appContrext = new AppContext(new DbContextOptionsBuilder<AppContext>().UseSqlServer(connectionString).Options);
-AwardEndpoint awardEndpoint = new AwardEndpoint(appContrext);
+// AppContext appContrext = new AppContext(new DbContextOptionsBuilder<AppContext>().UseSqlServer(connectionString).Options);
+// AwardEndpoint awardEndpoint = new AwardEndpoint(appContrext);
 
 #region GetAll
-app.MapGet("/GetAll/Users", () =>
+app.MapGet("/GetAll/Users", (AppContext appContrext) =>
 {
     Console.WriteLine("GetAll/Users");
     List<UserInfo> list = new List<UserInfo>();
@@ -473,26 +458,26 @@ app.MapGet("/Contains/Donations/{GUID}", (Guid GUID) =>
 #endregion
 
 #region Award
-app.MapGet("/award", () =>
+app.MapGet("/award", (AwardEndpoint awardEndpoint) =>
 {
     Console.WriteLine("GetAll/Users");
 
     return awardEndpoint.ReadAwards();
 });
 
-app.MapPost("/award/add", (Award award) =>
+app.MapPost("/award/add", (Award award, AwardEndpoint awardEndpoint) =>
 {
     Console.WriteLine("Add/User");
     awardEndpoint.CreateAward(award);
 });
 
-app.MapPut("/award/update", (Award award) =>
+app.MapPut("/award/update", (Award award, AwardEndpoint awardEndpoint) =>
 {
     Console.WriteLine("Update/User");
     awardEndpoint.UpdateAward(award);
 });
 
-app.MapDelete("/award/delete/{id}", (Guid GUID) =>
+app.MapDelete("/award/delete/{id}", (Guid GUID, AwardEndpoint awardEndpoint) =>
 {
     Console.WriteLine("Delete/User");
     awardEndpoint.DeleteAward(GUID);
