@@ -10,7 +10,7 @@ namespace Moderation.Model
         public string Description { get; set; }
         public User Creator { get; }
         public QuestionRepository GroupEntryQuestions { get; }
-        public RoleRepository Roles { get; }
+        // public RoleRepository Roles { get; }
         public Dictionary<User, Role> GroupMembers { get; }
         public Group(string name, string description, User creator)
         {
@@ -19,12 +19,12 @@ namespace Moderation.Model
             Description = description;
             Creator = creator;
             GroupEntryQuestions = new ();
-            Roles = new ();
+            // Roles = new ();
             GroupMembers = [];
             var arrayOfAllPermissions = Enum.GetValues(typeof(Permission));
             var listOfAllPermissions = new List<Permission>(arrayOfAllPermissions.Cast<Permission>());
             Role creatorRole = new ("Creator", listOfAllPermissions);
-            Roles.Add(creatorRole.Id, creatorRole);
+            // Roles.Add(creatorRole.Id, creatorRole);
             GroupMembers.Add(creator, creatorRole);
         }
         public Group(Guid id, string name, string description, User creator)
@@ -34,12 +34,12 @@ namespace Moderation.Model
             Description = description;
             Creator = creator;
             GroupEntryQuestions = new ();
-            Roles = new ();
+            // Roles = new ();
             GroupMembers = [];
             var arrayOfAllPermissions = Enum.GetValues(typeof(Permission));
             var listOfAllPermissions = new List<Permission>(arrayOfAllPermissions.Cast<Permission>());
             Role creatorRole = new ("Creator", listOfAllPermissions);
-            Roles.Add(creatorRole.Id, creatorRole);
+            // Roles.Add(creatorRole.Id, creatorRole);
             GroupMembers.Add(creator, creatorRole);
         }
     }
