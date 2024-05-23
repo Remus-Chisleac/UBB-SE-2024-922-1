@@ -1,101 +1,107 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Entities;
 
 namespace Moderation.DbEndpoints
 {
     public class UserEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1235;Initial Catalog=Moderation;Persist Security Info=False;Integrated security=true;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateUser(User user)
+        private readonly string serverAddress;
+
+        public UserEndpoints(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
-            string sql = "INSERT INTO [User] (Id, Username, Password) " +
-                         "VALUES (@Id, @Username, @Password)";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", user.Id);
-            command.Parameters.AddWithValue("@Username", user.Username);
-            command.Parameters.AddWithValue("@Password", user.Password);
-
-            command.ExecuteNonQuery();
+            serverAddress = server;
         }
 
-        public static List<User> ReadAllUsers()
+        public void CreateUser(User user)
         {
-            List<User> users = [];
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/user/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(user), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        public List<User> ReadAllUsers()
+        {
+            string call = "/user";
+            string strResponseValue;
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<User>>(strResponseValue) ?? throw new Exception("server returned empty list");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
                 return new List<User>();
             }
-            string sql = "SELECT Id, Username, Password FROM [User]";
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                User user = new (reader.GetGuid(0), reader.GetString(1), reader.GetString(2));
-                users.Add(user);
-            }
-            return users;
         }
-        public static void UpdateUser(User newValues)
+        public void UpdateUser(User newValues)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/user/update";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(newValues), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-            string sql = "UPDATE User" +
-                         "SET Username = @Username, Password = @Password" +
-                         "WHERE Id = @Id";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Username", newValues.Username);
-            command.Parameters.AddWithValue("@Password", newValues.Password);
-            command.Parameters.AddWithValue("@Id", newValues.Id);
-
-            command.ExecuteNonQuery();
         }
-        public static void DeleteUser(Guid id)
+        public void DeleteUser(Guid id)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = $"/user/delete/{id}";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-
-            string sql = "DELETE FROM User WHERE Id = @Id";
-
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", id);
-
-            command.ExecuteNonQuery();
         }
     }
 }
