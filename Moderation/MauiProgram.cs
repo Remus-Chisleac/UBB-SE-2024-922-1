@@ -28,6 +28,8 @@ namespace Moderation
             builder.Services.AddSingleton(new AwardEndpoint(serverAddress));
             builder.Services.AddSingleton(new GroupEndpoints(serverAddress));
             builder.Services.AddSingleton(new GroupUserEndpoints(serverAddress));
+            builder.Services.AddSingleton(new JoinRequestAnswerForOneQuestionEndpoints(serverAddress));
+            builder.Services.AddSingleton(new JoinRequestEndpoints(serverAddress));
             builder.Services.AddScoped<IGroupRepository, GroupRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();

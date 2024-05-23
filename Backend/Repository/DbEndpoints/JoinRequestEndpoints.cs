@@ -1,74 +1,85 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Entities;
 
 namespace Moderation.DbEndpoints
 {
     public class JoinRequestEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateJoinRequest(JoinRequest joinRequest)
-        {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
+        private readonly string serverAddress;
 
-            string insertJoinRequestSql = "INSERT INTO JoinRequest (Id, UserId) VALUES (@Id, @UserId)";
-            using SqlCommand command = new (insertJoinRequestSql, connection);
-            command.Parameters.AddWithValue("@Id", joinRequest.Id);
-            command.Parameters.AddWithValue("@UserId", joinRequest.UserId);
-            command.ExecuteNonQuery();
-        }
-        public static List<JoinRequest> ReadAllJoinRequests()
+        public JoinRequestEndpoints(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return [];
-            }
-            List<JoinRequest> joinRequests = [];
-            string sql = "SELECT Junior.Id, Junior.UserId " +
-                         "FROM JoinRequest Junior ";
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                JoinRequest joinRequest = new (
-                    reader.GetGuid(0),
-                    reader.GetGuid(1));
-                joinRequests.Add(joinRequest);
-            }
-            return joinRequests;
+            serverAddress = server;
         }
 
-        public static void DeleteJoinRequest(Guid joinRequestId)
+        public void CreateJoinRequest(JoinRequest joinRequest)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/joinrequest/add";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(joinRequest), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-            string deleteJoinRequestSql = "DELETE FROM JoinRequest WHERE Id = @Id";
-            using SqlCommand command = new (deleteJoinRequestSql, connection);
-            command.Parameters.AddWithValue("@Id", joinRequestId);
-            command.ExecuteNonQuery();
+        }
+        public List<JoinRequest> ReadAllJoinRequests()
+        {
+            string call = "/joinrequest";
+            string strResponseValue;
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<JoinRequest>>(strResponseValue) ?? throw new Exception("server returned empty list");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return new List<JoinRequest>();
+            }
+        }
+
+        public void DeleteJoinRequest(Guid joinRequestId)
+        {
+            string call = $"/joinrequest/delete/{joinRequestId}";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }
