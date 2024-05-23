@@ -26,6 +26,8 @@ namespace Moderation
             string serverAddress = "http://localhost:5043";
 
             builder.Services.AddSingleton(new AwardEndpoint(serverAddress));
+            builder.Services.AddSingleton(new GroupEndpoints(serverAddress));
+            builder.Services.AddSingleton(new GroupUserEndpoints(serverAddress));
             builder.Services.AddScoped<IGroupRepository, GroupRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
