@@ -4,8 +4,8 @@ using Backend.Repository.Interfaces;
 using Backend.Repository;
 using Moderation.Serivce;
 using Backend.Service;
-using EventsApp;
 using EventsApp.Logic.Managers;
+using Moderation.DbEndpoints;
 
 namespace Moderation
 {
@@ -23,6 +23,9 @@ namespace Moderation
                     fonts.AddFont("BAHNSCHRIFT.TTF", "Bahnschrift");
                 });
 
+            string serverAddress = "http://localhost:5043";
+
+            builder.Services.AddSingleton(new AwardEndpoint(serverAddress));
             builder.Services.AddScoped<IGroupRepository, GroupRepository>();
             builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();

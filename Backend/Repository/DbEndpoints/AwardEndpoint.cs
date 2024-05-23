@@ -1,92 +1,109 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
+﻿using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Text;
 using Moderation.Entities;
 
 namespace Moderation.DbEndpoints
 {
     public class AwardEndpoint
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
-        public static void CreateAward(Award award)
-        {
-            using SqlConnection connection = new (ConnectionString);
-            try
-            {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
-            }
+        private readonly string serverAddress;
 
-            string sql = "INSERT INTO Award VALUES (@Id,@Type)";
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", award.Id);
-            command.Parameters.AddWithValue("@Type", award.AwardTypeObj.ToString());
-            command.ExecuteNonQuery();
-        }
-        public static List<Award> ReadAwards()
+        public AwardEndpoint(string server)
         {
-            using SqlConnection connection = new (ConnectionString);
+            serverAddress = server;
+        }
+
+        public void CreateAward(Award award)
+        {
+            string call = "/award/add";
+
             try
             {
-                connection.Open();
-            }
-            catch (SqlException azureTrialExpired)
-            {
-                Console.WriteLine(azureTrialExpired.Message);
-                return [];
-            }
-            List<Award> awards = [];
-            string sql = "SELECT * FROM Award";
-            using SqlCommand command = new (sql, connection);
-            using SqlDataReader reader = command.ExecuteReader();
-            while (reader.Read())
-            {
-                Award award = new ()
+                using (var client = new HttpClient())
                 {
-                    Id = reader.GetGuid(0),
-                    AwardTypeObj = (Award.AwardType)Enum.Parse(typeof(Award.AwardType), reader.GetString(1)),
-                };
-                awards.Add(award);
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(award), Encoding.UTF8, "application/json");
+
+                    var response = client.PostAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            return awards;
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
-        public static void UpdateAward(Award award)
+
+        public List<Award> ReadAwards()
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/award";
+            string strResponseValue;
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.GetAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                    strResponseValue = response.Content.ReadAsStringAsync().Result;
+                }
+                return JsonSerializer.Deserialize<List<Award>>(strResponseValue) ?? throw new Exception("server returned empty list");
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
+                return new List<Award>();
             }
-            string sql = "UPDATE Award SET Type=@T WHERE AwardId=@Id";
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@Id", award.Id);
-            command.Parameters.AddWithValue("@T", award.AwardTypeObj.ToString());
-            command.ExecuteNonQuery();
         }
-        public static void DeleteAward(Guid id)
+
+        public void UpdateAward(Award award)
         {
-            using SqlConnection connection = new (ConnectionString);
+            string call = "/award/update";
+
             try
             {
-                connection.Open();
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    HttpContent content = new StringContent(JsonSerializer.Serialize(award), Encoding.UTF8, "application/json");
+
+                    var response = client.PutAsync(call, content).Result;
+                    response.EnsureSuccessStatusCode();
+                }
             }
-            catch (SqlException azureTrialExpired)
+            catch (Exception ex)
             {
-                Console.WriteLine(azureTrialExpired.Message);
-                return;
+                Console.WriteLine(ex.Message);
             }
-            string sql = "DELETE FROM Award WHERE AwardId=@id";
-            using SqlCommand command = new (sql, connection);
-            command.Parameters.AddWithValue("@id", id);
-            command.ExecuteNonQuery();
+        }
+
+        public void DeleteAward(Guid id)
+        {
+            string call = $"/award/delete/{id}";
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(serverAddress);
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    var response = client.DeleteAsync(call).Result;
+                    response.EnsureSuccessStatusCode();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

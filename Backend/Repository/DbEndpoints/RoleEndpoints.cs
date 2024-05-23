@@ -7,7 +7,7 @@ namespace Moderation.DbEndpoints
 {
     public class RoleEndpoints
     {
-        private static readonly string ConnectionString = "Data Source=localhost,1433;Initial Catalog=Moderation;Persist Security Info=False;User ID=ISS;Password=iss;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
+        private static readonly string ConnectionString = "Data Source=localhost,1235;Initial Catalog=Moderation;Persist Security Info=False;Integrated security=true;MultipleActiveResultSets=False;Encrypt=False;TrustServerCertificate=False;Connection Timeout=30;";
         public static void CreateRole(Role role)
         {
             using SqlConnection connection = new (ConnectionString);
