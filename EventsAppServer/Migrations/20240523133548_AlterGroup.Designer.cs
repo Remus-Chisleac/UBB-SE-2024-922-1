@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventsAppServer.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20240523133548_AlterGroup")]
+    partial class AlterGroup
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -130,7 +133,7 @@ namespace EventsAppServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("CreatorId")
+                    b.Property<Guid>("CreatorGUID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Description")
@@ -143,7 +146,7 @@ namespace EventsAppServer.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreatorId");
+                    b.HasIndex("CreatorGUID");
 
                     b.ToTable("Groups");
                 });
@@ -365,8 +368,8 @@ namespace EventsAppServer.Migrations
             modelBuilder.Entity("EventsAppServer.Entities.Group", b =>
                 {
                     b.HasOne("EventsAppServer.Entities.UserInfo", "Creator")
-                        .WithMany("Groups")
-                        .HasForeignKey("CreatorId")
+                        .WithMany()
+                        .HasForeignKey("CreatorGUID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -387,11 +390,6 @@ namespace EventsAppServer.Migrations
             modelBuilder.Entity("EventsAppServer.Entities.TextPost", b =>
                 {
                     b.Navigation("Awards");
-                });
-
-            modelBuilder.Entity("EventsAppServer.Entities.UserInfo", b =>
-                {
-                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

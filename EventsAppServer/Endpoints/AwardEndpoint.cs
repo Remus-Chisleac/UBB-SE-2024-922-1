@@ -1,6 +1,4 @@
-﻿using System.Configuration;
-using Microsoft.Data.SqlClient;
-using EventsAppServer.Entities;
+﻿using EventsAppServer.Entities;
 
 namespace EventsAppServer.DbEndpoints
 {
@@ -39,7 +37,7 @@ namespace EventsAppServer.DbEndpoints
                 from award in _context.Awards
                 where award.Id == id
                 select award;
-            Award? item = items.FirstOrDefault();
+            Award item = items.FirstOrDefault() ?? new Award();
             _context.Remove(item);
             _context.SaveChanges();
         }

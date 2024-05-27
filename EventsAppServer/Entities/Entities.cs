@@ -16,6 +16,7 @@ namespace EventsAppServer.Entities
         public Guid GUID { get; set; }
         public string Name { get; set; }
         public string Password { get; set; }
+        public ICollection<Group> Groups { get; } = new List<Group>();
 
         public UserInfo(Guid guid, string name, string password)
         {
