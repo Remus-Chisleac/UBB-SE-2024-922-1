@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 using Moderation.Repository;
 using Backend.Repository.Interfaces;
 using Backend.Repository;
