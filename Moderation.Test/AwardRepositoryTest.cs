@@ -11,7 +11,7 @@ namespace Moderation.Test
         [SetUp]
         public void Setup()
         {
-            repo = new AwardRepository();
+            repo = new AwardRepository(new DbEndpoints.AwardEndpoint("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"));
         }
 
         [Test]

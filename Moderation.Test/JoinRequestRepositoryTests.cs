@@ -13,7 +13,7 @@ namespace Moderation.Test
         [SetUp]
         public void Setup()
         {
-            repository = new JoinRequestRepository();
+            repository = new JoinRequestRepository(new DbEndpoints.JoinRequestEndpoints("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"));
         }
 
         private JoinRequest CreateJoinRequest()
