@@ -23,8 +23,8 @@ public partial class GroupRoleDisplay : ContentPage
         {
             var currentGroup = currentSession.Group;
 
-            if (currentGroup.Roles.ContainsKey(role.Id))
-            {
+            // if (currentGroup.Roles.Contains(role.Id)) // should change to take roles from service
+            // {
                 foreach (var user in currentGroup.GroupMembers)
                 {
                     if (user.Value.Id.Equals(role.Id))
@@ -34,12 +34,12 @@ public partial class GroupRoleDisplay : ContentPage
                         stackLayout.Children.Add(usernameLabel);
                     }
                 }
-            }
-            else
-            {
-                var errorLabel = new Label { Text = $"The desired role '{role.Name}' does not exist in the current group." };
-                stackLayout.Children.Add(errorLabel);
-            }
+            // }
+            // else
+            // {
+            //    var errorLabel = new Label { Text = $"The desired role '{role.Name}' does not exist in the current group." };
+            //    stackLayout.Children.Add(errorLabel);
+            // }
         }
         else
         {

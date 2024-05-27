@@ -87,7 +87,7 @@ namespace Moderation.DbEndpoints
 
         public void DeletePostReport(Guid reportId)
         {
-            string call = $"/award/delete/{reportId}";
+            string call = $"/report/delete/{reportId}";
 
             try
             {

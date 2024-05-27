@@ -110,7 +110,7 @@ namespace Moderation.DbEndpoints
 
         public void DeleteTextPost(Guid postId)
         {
-            string call = $"/award/delete/{postId}";
+            string call = $"/textpost/delete/{postId}";
 
             try
             {

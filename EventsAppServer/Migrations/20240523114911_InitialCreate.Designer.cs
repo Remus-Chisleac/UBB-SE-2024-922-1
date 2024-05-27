@@ -11,8 +11,13 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventsAppServer.Migrations
 {
     [DbContext(typeof(AppContext))]
+<<<<<<<< HEAD:EventsAppServer/Migrations/20240522212814_AllAdded.Designer.cs
     [Migration("20240522212814_AllAdded")]
     partial class AllAdded
+========
+    [Migration("20240523114911_InitialCreate")]
+    partial class InitialCreate
+>>>>>>>> asdfasdf:EventsAppServer/Migrations/20240523114911_InitialCreate.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

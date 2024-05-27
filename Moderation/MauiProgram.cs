@@ -5,7 +5,6 @@ using Backend.Repository.Interfaces;
 using Backend.Repository;
 using Moderation.Serivce;
 using Backend.Service;
-using EventsApp;
 using EventsApp.Logic.Managers;
 using Moderation.DbEndpoints;
 

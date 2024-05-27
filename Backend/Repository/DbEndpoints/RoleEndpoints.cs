@@ -87,7 +87,7 @@ namespace Moderation.DbEndpoints
 
         public void DeleteRole(Guid roleId)
         {
-            string call = $"/award/delete/{roleId}";
+            string call = $"/role/delete/{roleId}";
 
             try
             {
