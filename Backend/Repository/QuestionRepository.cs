@@ -13,6 +13,7 @@ namespace Moderation.Repository
         }
         public QuestionRepository() : base()
         {
+            data = new Dictionary<Guid, Question>();
         }
 
         // public IEnumerable<JoinRequestAnswerToOneQuestion> GetQuestionsByGroup(Guid groupId)

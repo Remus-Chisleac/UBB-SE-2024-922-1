@@ -13,6 +13,7 @@ namespace Backend.Repository
 
         public PostRepository() : base()
         {
+            Data = new Dictionary<Guid, IPost>();
         }
 
         public virtual bool Add(Guid key, IPost post)
