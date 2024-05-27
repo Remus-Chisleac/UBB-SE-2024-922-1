@@ -1,15 +1,22 @@
 ﻿using Moderation.Model;
+using System.Text.Json.Serialization;
 
 namespace Moderation.Entities
 {
     public class GroupUser : IHasID
     {
+        [JsonPropertyName("description")]
         public Guid Id { get; set; }
+        [JsonPropertyName("description")]
         public Guid UserId { get; set; }
+        [JsonPropertyName("description")]
         public Guid GroupId { get; set; }
+        [JsonPropertyName("description")]
         public int PostScore { get; set; }
+        [JsonPropertyName("description")]
         public int MarketplaceScore { get; set; }
         public UserStatus Status { get; set; }
+        [JsonPropertyName("description")]
         public Guid RoleId { get; set; }
         public GroupUser(Guid userId, Guid groupId)
         {

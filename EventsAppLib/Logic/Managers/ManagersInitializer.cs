@@ -36,6 +36,11 @@
             }
         }
 
+        public static void SetUser(UserInfo user)
+        {
+            AppStateManager.SetCurrentUser(user.GUID, user.Name, user.Password);
+        }
+
         public static void SetupDB(bool dropTables = false, bool testDB = false)
         {
             if (!testDB)

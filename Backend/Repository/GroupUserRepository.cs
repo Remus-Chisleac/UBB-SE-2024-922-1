@@ -6,47 +6,46 @@ namespace Moderation.Repository
 {
     public class GroupUserRepository : IGroupUserRepository
     {
-        protected readonly Dictionary<Guid, GroupUser> Data;
-        public GroupUserRepository(Dictionary<Guid, GroupUser> data)
+        private GroupUserEndpoints groupUserEndpoints;
+
+        public GroupUserRepository(GroupUserEndpoints groupUserEndpoints) : base()
         {
-            this.Data = data;
+            this.groupUserEndpoints = groupUserEndpoints;
         }
-        public GroupUserRepository() : base()
-        {
-        }
+
         public bool Add(Guid key, GroupUser value)
         {
-            GroupUserEndpoints.CreateGroupUser(value);
+            groupUserEndpoints.CreateGroupUser(value);
             return true;
         }
         public bool Contains(Guid key)
         {
-            return GroupUserEndpoints.ReadAllGroupUsers().Exists(groupUser => groupUser.Id == key);
+            return groupUserEndpoints.ReadAllGroupUsers().Exists(groupUser => groupUser.Id == key);
         }
 
         public GroupUser? Get(Guid key)
         {
-            return GroupUserEndpoints.ReadAllGroupUsers().Find(groupUser => groupUser.Id == key);
+            return groupUserEndpoints.ReadAllGroupUsers().Find(groupUser => groupUser.Id == key);
         }
 
         public GroupUser? GetByUserIdAndGroupId(Guid userId, Guid groupId)
         {
-            return GroupUserEndpoints.ReadAllGroupUsers().Find(groupUser => groupUser.UserId == userId && groupUser.GroupId == groupId);
+            return groupUserEndpoints.ReadAllGroupUsers().Find(groupUser => groupUser.UserId == userId && groupUser.GroupId == groupId);
         }
 
         public IEnumerable<GroupUser> GetAll()
         {
-            return GroupUserEndpoints.ReadAllGroupUsers();
+            return groupUserEndpoints.ReadAllGroupUsers();
         }
 
         public bool Remove(Guid key)
         {
-            GroupUserEndpoints.DeleteGroupUser(key);
+            groupUserEndpoints.DeleteGroupUser(key);
             return true;
         }
         public bool Update(Guid key, GroupUser value)
         {
-            GroupUserEndpoints.UpdateGroupUser(value);
+            groupUserEndpoints.UpdateGroupUser(value);
             return true;
         }
     }

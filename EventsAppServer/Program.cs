@@ -53,9 +53,8 @@ DataBaseAdapter<UserEventRelationInfo> UserEventRelationsDataBaseAdapter = app.S
 DataBaseAdapter<DonationInfo> DonationsDataBaseAdapter = app.Services.GetRequiredService<DataBaseAdapter<DonationInfo>>() ?? throw new Exception();
 
 
-// AppContext appContrext = app.Services.GetService<AppContext>();
+//AppContext appContrext = app.Services.GetRequiredService<AppContext>();
 AppContext appContrext = new AppContext(new DbContextOptionsBuilder<AppContext>().UseSqlServer(connectionString).Options);
-AwardEndpoint awardEndpoint = new AwardEndpoint(appContrext);
 
 #region GetAll
 app.MapGet("/GetAll/Users", () =>
