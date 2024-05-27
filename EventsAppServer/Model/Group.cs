@@ -7,12 +7,13 @@ namespace EventsAppServer.Entities
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public User Creator { get; }
+        public Guid CreatorId { get; set; }
+        public UserInfo Creator { get; set; }
         public QuestionRepository GroupEntryQuestions { get; }
         public Dictionary<Guid, Role> Roles { get; }
-        public Dictionary<User, Role> GroupMembers { get; }
+        public Dictionary<UserInfo, Role> GroupMembers { get; }
         public Group() { }
-        public Group(string name, string description, User creator)
+        public Group(string name, string description, UserInfo creator)
         {
             Id = Guid.NewGuid();
             Name = name;
@@ -27,7 +28,7 @@ namespace EventsAppServer.Entities
             Roles.Add(creatorRole.Id, creatorRole);
             GroupMembers.Add(creator, creatorRole);
         }
-        public Group(Guid id, string name, string description, User creator)
+        public Group(Guid id, string name, string description, UserInfo creator)
         {
             Id = id;
             Name = name;

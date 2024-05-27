@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventsAppServer.Migrations
 {
     [DbContext(typeof(AppContext))]
-    partial class AppContextModelSnapshot : ModelSnapshot
+    [Migration("20240523133006_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -319,6 +322,25 @@ namespace EventsAppServer.Migrations
                     b.ToTable("TextPosts");
                 });
 
+            modelBuilder.Entity("EventsAppServer.Entities.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Password")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("User");
+                });
+
             modelBuilder.Entity("EventsAppServer.Entities.UserEventRelationInfo", b =>
                 {
                     b.Property<Guid>("EventGUID")
@@ -364,8 +386,8 @@ namespace EventsAppServer.Migrations
 
             modelBuilder.Entity("EventsAppServer.Entities.Group", b =>
                 {
-                    b.HasOne("EventsAppServer.Entities.UserInfo", "Creator")
-                        .WithMany("Groups")
+                    b.HasOne("EventsAppServer.Entities.User", "Creator")
+                        .WithMany()
                         .HasForeignKey("CreatorId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -387,11 +409,6 @@ namespace EventsAppServer.Migrations
             modelBuilder.Entity("EventsAppServer.Entities.TextPost", b =>
                 {
                     b.Navigation("Awards");
-                });
-
-            modelBuilder.Entity("EventsAppServer.Entities.UserInfo", b =>
-                {
-                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }

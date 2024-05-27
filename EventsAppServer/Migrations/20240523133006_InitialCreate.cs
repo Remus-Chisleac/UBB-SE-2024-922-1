@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EventsAppServer.Migrations
 {
     /// <inheritdoc />
-    public partial class AllAdded : Migration
+    public partial class InitialCreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -57,19 +57,6 @@ namespace EventsAppServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Events", x => x.GUID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Groups",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Groups", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -170,6 +157,19 @@ namespace EventsAppServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "User",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_User", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "UserEventRelations",
                 columns: table => new
                 {
@@ -218,6 +218,26 @@ namespace EventsAppServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Groups",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatorId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Groups", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Groups_User_CreatorId",
+                        column: x => x.CreatorId,
+                        principalTable: "User",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Awards",
                 columns: table => new
                 {
@@ -239,6 +259,11 @@ namespace EventsAppServer.Migrations
                 name: "IX_Awards_TextPostId",
                 table: "Awards",
                 column: "TextPostId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Groups_CreatorId",
+                table: "Groups",
+                column: "CreatorId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_TextPosts_AuthorId",
@@ -290,6 +315,9 @@ namespace EventsAppServer.Migrations
 
             migrationBuilder.DropTable(
                 name: "TextPosts");
+
+            migrationBuilder.DropTable(
+                name: "User");
 
             migrationBuilder.DropTable(
                 name: "GroupUsers");

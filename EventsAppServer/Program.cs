@@ -577,6 +577,33 @@ app.MapDelete("/postReport/delete/{id}", (Guid GUID, ReportEndpoint reportEndpoi
 
 #endregion
 
+#region Group
+app.MapGet("/group", (GroupEndpoints groupEndpoints) =>
+{
+    Console.WriteLine("GetAll/group");
+
+    return groupEndpoints.ReadAllGroups();
+});
+
+app.MapPost("/group/add", (Group group, GroupEndpoints groupEndpoints) =>
+{
+    Console.WriteLine("Add/group");
+    groupEndpoints.CreateGroup(group);
+});
+
+app.MapPut("/group/update", (Group group, GroupEndpoints groupEndpoints) =>
+{
+    Console.WriteLine("Update/group");
+    groupEndpoints.UpdateGroup(group);
+});
+
+app.MapDelete("/group/delete/{id}", (Guid GUID, GroupEndpoints groupEndpoints) =>
+{
+    Console.WriteLine("Delete/group");
+    groupEndpoints.DeleteGroup(GUID);
+});
+#endregion
+
 
 app.Run();
 

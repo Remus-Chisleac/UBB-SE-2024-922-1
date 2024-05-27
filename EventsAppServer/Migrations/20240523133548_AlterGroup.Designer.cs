@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EventsAppServer.Migrations
 {
     [DbContext(typeof(AppContext))]
-    [Migration("20240522212814_AllAdded")]
-    partial class AllAdded
+    [Migration("20240523133548_AlterGroup")]
+    partial class AlterGroup
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -133,6 +133,9 @@ namespace EventsAppServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CreatorGUID")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -142,6 +145,8 @@ namespace EventsAppServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorGUID");
 
                     b.ToTable("Groups");
                 });
@@ -358,6 +363,17 @@ namespace EventsAppServer.Migrations
                     b.HasOne("EventsAppServer.Entities.TextPost", null)
                         .WithMany("Awards")
                         .HasForeignKey("TextPostId");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.Group", b =>
+                {
+                    b.HasOne("EventsAppServer.Entities.UserInfo", "Creator")
+                        .WithMany()
+                        .HasForeignKey("CreatorGUID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
                 });
 
             modelBuilder.Entity("EventsAppServer.Entities.TextPost", b =>
