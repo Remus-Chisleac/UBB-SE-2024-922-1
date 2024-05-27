@@ -1,17 +1,21 @@
 ﻿using Moderation.Entities;
 using Moderation.Repository;
-using NUnit.Framework;
-using System;
-using System.Linq;
 
 namespace Moderation.Test
 {
     public class UserRepositoryTests
     {
+        private UserRepository repo;
+
+        [SetUp]
+        public void Setup()
+        {
+            repo = new UserRepository(new DbEndpoints.UserEndpoints("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"));
+        }
+
         [Test]
         public void Add_AddUser_ReturnsTrue()
         {
-            var repo = new UserRepository();
             var user = new User("testUser");
 
             bool result = repo.Add(user.Id, user);
@@ -22,7 +26,6 @@ namespace Moderation.Test
         [Test]
         public void Contains_ExistingUser_ReturnsTrue()
         {
-            var repo = new UserRepository();
             var user = new User("testUser");
             repo.Add(user.Id, user);
 
@@ -34,8 +37,6 @@ namespace Moderation.Test
         [Test]
         public void Contains_NonExistingUser_ReturnsFalse()
         {
-            var repo = new UserRepository();
-
             bool result = repo.Contains(Guid.NewGuid());
 
             Assert.IsFalse(result);
@@ -44,7 +45,6 @@ namespace Moderation.Test
         [Test]
         public void Get_ExistingUser_ReturnsUser()
         {
-            var repo = new UserRepository();
             var user = new User("testUser");
             repo.Add(user.Id, user);
 
@@ -57,8 +57,6 @@ namespace Moderation.Test
         [Test]
         public void Get_NonExistingUser_ReturnsNull()
         {
-            var repo = new UserRepository();
-
             var retrievedUser = repo.Get(Guid.NewGuid());
 
             Assert.IsNull(retrievedUser);
@@ -67,7 +65,6 @@ namespace Moderation.Test
         [Test]
         public void GetAll_ReturnsAllUsers()
         {
-            var repo = new UserRepository();
             var user1 = new User("user1");
             var user2 = new User("user2");
             repo.Add(user1.Id, user1);
@@ -83,7 +80,6 @@ namespace Moderation.Test
         [Test]
         public void Remove_ExistingUser_ReturnsTrue()
         {
-            var repo = new UserRepository();
             var user = new User("testUser");
             repo.Add(user.Id, user);
 
@@ -95,7 +91,6 @@ namespace Moderation.Test
         [Test]
         public void Update_ExistingUser_ReturnsTrue()
         {
-            var repo = new UserRepository();
             var user = new User("testUser");
             repo.Add(user.Id, user);
             var updatedUser = new User(user.Id, "updatedUser");
@@ -109,8 +104,6 @@ namespace Moderation.Test
         [Test]
         public void GetGuidByName_NonExistingUsername_ReturnsNull()
         {
-            var repo = new UserRepository();
-
             var userId = repo.GetGuidByName("nonExistingUser");
             Assert.IsNull(userId);
         }

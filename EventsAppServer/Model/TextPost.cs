@@ -10,6 +10,7 @@
         public List<Award> Awards { get; set; }
         public bool IsDeleted { get; set; }
         // public Guid GroupId { get; set; }
+        public TextPost() { }
         public TextPost(string content, GroupUser author)
         {
             Id = Guid.NewGuid();

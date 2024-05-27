@@ -7,45 +7,43 @@ namespace Moderation.Repository
 {
     public class ReportRepository : IReportRepository
     {
-        protected readonly Dictionary<Guid, PostReport> data;
-        public ReportRepository(Dictionary<Guid, PostReport> data)
+        private ReportEndpoint reportEndpoint;
+
+        public ReportRepository(ReportEndpoint reportEndpoint) : base()
         {
-            this.data = data;
-        }
-        public ReportRepository() : base()
-        {
+            this.reportEndpoint = reportEndpoint;
         }
 
         public bool Add(Guid key, PostReport value)
         {
-            ReportEndpoint.CreatePostReport(value);
+            reportEndpoint.CreatePostReport(value);
             return true;
         }
 
         public bool Contains(Guid key)
         {
-            return ReportEndpoint.ReadAllPostReports().Exists(r => r.Id == key);
+            return reportEndpoint.ReadAllPostReports().Exists(r => r.Id == key);
         }
 
         public PostReport? Get(Guid key)
         {
-            return ReportEndpoint.ReadAllPostReports().Find(r => r.Id == key);
+            return reportEndpoint.ReadAllPostReports().Find(r => r.Id == key);
         }
 
         public IEnumerable<PostReport> GetAll()
         {
-            return ReportEndpoint.ReadAllPostReports();
+            return reportEndpoint.ReadAllPostReports();
         }
 
         public bool Remove(Guid key)
         {
-            ReportEndpoint.DeletePostReport(key);
+            reportEndpoint.DeletePostReport(key);
             return true;
         }
 
         public bool Update(Guid key, PostReport value)
         {
-            ReportEndpoint.UpdatePostReport(key, value);
+            reportEndpoint.UpdatePostReport(key, value);
             return true;
         }
     }

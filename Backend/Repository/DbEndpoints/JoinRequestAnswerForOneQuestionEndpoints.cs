@@ -1,8 +1,6 @@
-﻿using System.Configuration;
-using System.Net.Http.Headers;
+﻿using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Text;
-using Microsoft.Data.SqlClient;
 using Moderation.Entities;
 
 namespace Moderation.DbEndpoints
@@ -54,7 +52,7 @@ namespace Moderation.DbEndpoints
                     response.EnsureSuccessStatusCode();
                     strResponseValue = response.Content.ReadAsStringAsync().Result;
                 }
-                return JsonSerializer.Deserialize<List<JoinRequestAnswerToOneQuestion>>(strResponseValue);
+                return JsonSerializer.Deserialize<List<JoinRequestAnswerToOneQuestion>>(strResponseValue) ?? throw new Exception("server returned empty list");
             }
             catch (Exception ex)
             {

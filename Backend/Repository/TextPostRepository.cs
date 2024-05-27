@@ -6,46 +6,43 @@ namespace Moderation.Repository
 {
     public class TextPostRepository : ITextPostRepository
     {
-        protected readonly Dictionary<Guid, TextPost> Data;
+        private TextPostEndpoints textPostEndpoints;
 
-        public TextPostRepository(Dictionary<Guid, TextPost> data)
+        public TextPostRepository(TextPostEndpoints textPostEndpoints) : base()
         {
-            this.Data = data;
-        }
-        public TextPostRepository() : base()
-        {
+            this.textPostEndpoints = textPostEndpoints;
         }
 
         public bool Add(Guid key, TextPost value)
         {
-            TextPostEndpoints.CreateTextPost(value);
+            textPostEndpoints.CreateTextPost(value);
             return true;
         }
 
         public bool Contains(Guid key)
         {
-            return TextPostEndpoints.ReadAllTextPosts().Exists(a => a.Id == key);
+            return textPostEndpoints.ReadAllTextPosts().Exists(a => a.Id == key);
         }
 
         public TextPost? Get(Guid key)
         {
-            return TextPostEndpoints.ReadAllTextPosts().Find(a => a.Id == key);
+            return textPostEndpoints.ReadAllTextPosts().Find(a => a.Id == key);
         }
 
         public IEnumerable<TextPost> GetAll()
         {
-            return TextPostEndpoints.ReadAllTextPosts();
+            return textPostEndpoints.ReadAllTextPosts();
         }
 
         public bool Remove(Guid key)
         {
-            TextPostEndpoints.DeleteTextPost(key);
+            textPostEndpoints.DeleteTextPost(key);
             return true;
         }
 
         public bool Update(Guid key, TextPost value)
         {
-            TextPostEndpoints.UpdateTextPost(value);
+            textPostEndpoints.UpdateTextPost(value);
             return true;
         }
     }

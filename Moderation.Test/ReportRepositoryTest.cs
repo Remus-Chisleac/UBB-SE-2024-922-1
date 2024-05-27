@@ -13,7 +13,7 @@ namespace Moderation.Test
         [SetUp]
         public void Setup()
         {
-            reportRepository = new ReportRepository();
+            reportRepository = new ReportRepository(new DbEndpoints.ReportEndpoint("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"));
         }
 
         [Test]

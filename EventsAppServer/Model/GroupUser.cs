@@ -12,7 +12,7 @@ namespace EventsAppServer.Entities
         public Guid GroupId { get; set; }
         public int PostScore { get; set; }
         public int MarketplaceScore { get; set; }
-        //public UserStatus Status { get; set; }
+        // public UserStatus Status { get; set; }
         public Guid RoleId { get; set; }
         public GroupUser(Guid userId, Guid groupId)
         {
@@ -21,7 +21,7 @@ namespace EventsAppServer.Entities
             GroupId = groupId;
             PostScore = 1;
             MarketplaceScore = 1;
-            //Status = new (UserRestriction.None, DateTime.Now);
+            // Status = new (UserRestriction.None, DateTime.Now);
         }
         public GroupUser(Guid id, Guid userId, Guid groupId, int postScore, int marketplaceScore, UserStatus userStatus)
         {
@@ -30,7 +30,7 @@ namespace EventsAppServer.Entities
             GroupId = groupId;
             PostScore = postScore;
             MarketplaceScore = marketplaceScore;
-            //Status = userStatus;
+            // Status = userStatus;
         }
         public GroupUser(Guid id, Guid userId, Guid groupId, int postScore, int marketplaceScore, UserStatus userStatus, Guid roleId)
         {
@@ -39,7 +39,7 @@ namespace EventsAppServer.Entities
             GroupId = groupId;
             PostScore = postScore;
             MarketplaceScore = marketplaceScore;
-            //Status = userStatus;
+            // Status = userStatus;
             RoleId = roleId;
         }
 
@@ -48,7 +48,7 @@ namespace EventsAppServer.Entities
             Id = id;
             UserId = userId;
             GroupId = groupID;
-            //Status = new (UserRestriction.None, DateTime.Now);
+            // Status = new (UserRestriction.None, DateTime.Now);
         }
     }
 }

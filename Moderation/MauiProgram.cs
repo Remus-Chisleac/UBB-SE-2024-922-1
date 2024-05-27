@@ -1,11 +1,9 @@
 ﻿using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Configuration;
 using Moderation.Repository;
 using Backend.Repository.Interfaces;
 using Backend.Repository;
 using Moderation.Serivce;
 using Backend.Service;
-using EventsApp;
 using EventsApp.Logic.Managers;
 using Moderation.DbEndpoints;
 
@@ -25,7 +23,6 @@ namespace Moderation
                     fonts.AddFont("BAHNSCHRIFT.TTF", "Bahnschrift");
                 });
 
-            // var serverAddress = builder.Configuration;
             string serverAddress = "http://localhost:5043";
 
             builder.Services.AddSingleton(new AwardEndpoint(serverAddress));

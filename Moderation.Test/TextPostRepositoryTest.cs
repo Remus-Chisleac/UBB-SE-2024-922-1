@@ -12,7 +12,7 @@ namespace Moderation.Test
         [SetUp]
         public void Setup()
         {
-            repo = new TextPostRepository();
+            repo = new TextPostRepository(new DbEndpoints.TextPostEndpoints("Server=tcp:localhost,1433;Initial Catalog=ISS_EventsApp_EF;User ID=ISS;Password=iss;TrustServerCertificate=True;MultiSubnetFailover=True"));
         }
 
         [Test]

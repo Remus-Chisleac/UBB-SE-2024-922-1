@@ -41,7 +41,12 @@ namespace EventsAppServer.Migrations
                     b.Property<int>("AwardTypeObj")
                         .HasColumnType("int");
 
+                    b.Property<Guid?>("TextPostId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TextPostId");
 
                     b.ToTable("Awards");
                 });
@@ -125,6 +130,9 @@ namespace EventsAppServer.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid>("CreatorId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -134,6 +142,8 @@ namespace EventsAppServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CreatorId");
 
                     b.ToTable("Groups");
                 });
@@ -200,6 +210,30 @@ namespace EventsAppServer.Migrations
                     b.ToTable("JoinRequestAnswerToOneQuestion");
                 });
 
+            modelBuilder.Entity("EventsAppServer.Entities.PostReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("GroupId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Message")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("PostId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PostReports");
+                });
+
             modelBuilder.Entity("EventsAppServer.Entities.ReportInfo", b =>
                 {
                     b.Property<Guid>("EventGUID")
@@ -255,6 +289,36 @@ namespace EventsAppServer.Migrations
                     b.ToTable("Roles");
                 });
 
+            modelBuilder.Entity("EventsAppServer.Entities.TextPost", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("AuthorId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Content")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("Score")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("TextPosts");
+                });
+
             modelBuilder.Entity("EventsAppServer.Entities.UserEventRelationInfo", b =>
                 {
                     b.Property<Guid>("EventGUID")
@@ -289,6 +353,45 @@ namespace EventsAppServer.Migrations
                     b.HasKey("GUID");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.Award", b =>
+                {
+                    b.HasOne("EventsAppServer.Entities.TextPost", null)
+                        .WithMany("Awards")
+                        .HasForeignKey("TextPostId");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.Group", b =>
+                {
+                    b.HasOne("EventsAppServer.Entities.UserInfo", "Creator")
+                        .WithMany("Groups")
+                        .HasForeignKey("CreatorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Creator");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.TextPost", b =>
+                {
+                    b.HasOne("EventsAppServer.Entities.GroupUser", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Author");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.TextPost", b =>
+                {
+                    b.Navigation("Awards");
+                });
+
+            modelBuilder.Entity("EventsAppServer.Entities.UserInfo", b =>
+                {
+                    b.Navigation("Groups");
                 });
 #pragma warning restore 612, 618
         }
