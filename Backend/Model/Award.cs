@@ -1,7 +1,10 @@
-﻿namespace Moderation.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace Moderation.Entities
 {
     public class Award : IHasID
     {
+        [JsonPropertyName("id")]
         public Guid Id { get; set; }
         public enum AwardType
         {
@@ -9,6 +12,7 @@
             Silver,
             Gold
         }
+        [JsonPropertyName("awardTypeObj")]
         public AwardType AwardTypeObj { get; set; }
 
         public Award()

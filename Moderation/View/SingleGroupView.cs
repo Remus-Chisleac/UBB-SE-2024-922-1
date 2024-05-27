@@ -19,7 +19,7 @@ public class SingleGroupView : ContentView
             return;
         }
 
-        var userIsInGroup = group.Creator.Id == user.Id;
+        var userIsInGroup = group.CreatorId == user.Id;
         var label = new Label
         {
             Margin = 5,
